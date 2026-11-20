@@ -1,6 +1,16 @@
 import EvaBarCore
 
 extension CalculationError {
+    var isEditingError: Bool {
+        switch self {
+        case .expectedValue, .expectedClosingParenthesis, .unexpectedInput, .unknownName,
+             .invalidNumber, .wrongArgumentCount:
+            true
+        case .divisionByZero, .outsideDomain, .overflow, .expressionTooComplex:
+            false
+        }
+    }
+
     @MainActor
     var messages: (summary: String, detail: String) {
         switch self {

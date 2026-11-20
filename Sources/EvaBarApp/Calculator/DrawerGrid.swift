@@ -21,6 +21,8 @@ final class DrawerGrid: NSView {
         self.verticalInset = verticalInset
         self.bottomInset = bottomInset
         super.init(frame: .zero)
+        clipsToBounds = true
+        autoresizesSubviews = false
         sections.forEach { addSubview($0) }
     }
 

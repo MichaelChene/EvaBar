@@ -2,12 +2,29 @@ import AppKit
 
 @MainActor
 final class CalculatorPanelView: NSView {
+    private struct DrawerTransition {
+        let previous: [DrawerGrid]
+        var windowHeights: (start: CGFloat, end: CGFloat)?
+    }
+
     let bar = CalculatorBarView()
     let collapseButton = NSButton()
     private let backdrop = NSVisualEffectView()
     private let backdropTint = NSView()
     private let drawerScroll = NSScrollView()
+    private let drawerContent = DrawerContentView()
+    private var drawerGrids: [DrawerGrid] = []
+    private var drawerTransition: DrawerTransition?
+    private var gridHeights: [DrawerGrid: CGFloat] = [:]
+    private var drawerWidth: CGFloat = 0
     private let divider = NSBox()
+    private let drawerDivider = NSBox()
+    private var visibleDrawerGrids: [DrawerGrid] {
+        guard let previous = drawerTransition?.previous, previous.count > drawerGrids.count else {
+            return drawerGrids
+        }
+        return previous
+    }
 
     override var isFlipped: Bool { true }
     override var wantsUpdateLayer: Bool { true }
@@ -22,13 +39,16 @@ final class CalculatorPanelView: NSView {
         backdropTint.wantsLayer = true
         backdropTint.autoresizingMask = [.width, .height]
         backdrop.addSubview(backdropTint)
-        divider.boxType = .custom
-        divider.borderWidth = 0
-        divider.fillColor = NSColor(white: 0.47, alpha: 0.35)
+        for line in [divider, drawerDivider] {
+            line.boxType = .custom
+            line.borderWidth = 0
+            line.fillColor = NSColor(white: 0.47, alpha: 0.35)
+        }
         drawerScroll.autohidesScrollers = true
         drawerScroll.drawsBackground = false
+        drawerScroll.documentView = drawerContent
         [backdrop, bar, drawerScroll, divider, collapseButton].forEach { addSubview($0) }
-        showDrawer(nil)
+        showDrawers([])
     }
 
     required init?(coder: NSCoder) { nil }
@@ -52,28 +72,50 @@ final class CalculatorPanelView: NSView {
     override func resizeSubviews(withOldSize oldSize: NSSize) {
         super.resizeSubviews(withOldSize: oldSize)
         backdrop.frame = bounds
-        let barHeight = CalculatorPanel.barHeight
-        bar.frame = NSRect(x: 0, y: 0, width: bounds.width, height: barHeight)
-        positionDrawer()
+        positionContent()
     }
 
-    private func positionDrawer() {
+    override func layout() {
+        super.layout()
+        positionContent()
+    }
+
+    private func positionContent() {
+        let barHeight = bar.height(fittingWidth: bounds.width)
+        bar.frame = NSRect(x: 0, y: 0, width: bounds.width, height: barHeight)
+        positionDrawer(below: barHeight)
+    }
+
+    private func positionDrawer(below barHeight: CGFloat) {
         guard !drawerScroll.isHidden else { return }
-        let barHeight = CalculatorPanel.barHeight
         // The panel clips the drawer while it animates. Keep the scroll view large enough to tile its scroller.
         let drawerHeight = max(24, bounds.height - barHeight)
         drawerScroll.frame = NSRect(x: 0, y: barHeight, width: bounds.width, height: drawerHeight)
+        positionDrawerGrids()
         divider.frame = NSRect(x: 0, y: barHeight - 1, width: bounds.width, height: 1)
         collapseButton.frame = NSRect(x: bounds.width - 37, y: max(barHeight, bounds.height - 24), width: 26, height: 22)
     }
 
-    func showDrawer(_ content: DrawerGrid?) {
+    func showDrawers(_ grids: [DrawerGrid], animated: Bool = false) {
         setDrawerScrollerEnabled(false)
-        drawerScroll.documentView = content
-        divider.isHidden = content == nil
-        drawerScroll.isHidden = content == nil
-        collapseButton.isHidden = content == nil
-        positionDrawer()
+        drawerTransition = animated ? DrawerTransition(previous: drawerGrids) : nil
+        drawerGrids = grids
+        let visible = visibleDrawerGrids
+        drawerContent.subviews = visible + [drawerDivider]
+        divider.isHidden = visible.isEmpty
+        drawerScroll.isHidden = visible.isEmpty
+        collapseButton.isHidden = visible.isEmpty
+        needsLayout = true
+    }
+
+    func prepareDrawerTransition(from start: CGFloat, to end: CGFloat) {
+        guard start != end else { return }
+        drawerTransition?.windowHeights = (start, end)
+    }
+
+    func finishDrawerTransition() {
+        guard drawerTransition != nil else { return }
+        showDrawers(drawerGrids)
     }
 
     func setDrawerScrollerEnabled(_ enabled: Bool) {
@@ -90,9 +132,44 @@ final class CalculatorPanelView: NSView {
     }
 
     func drawerHeight(fittingWidth width: CGFloat) -> CGFloat {
-        guard let content = drawerScroll.documentView as? DrawerGrid else { return 0 }
         let scrollerWidth = drawerScroll.scrollerStyle == .legacy
             ? NSScroller.scrollerWidth(for: .regular, scrollerStyle: .legacy) : 0
-        return content.layoutContent(width: max(1, width - scrollerWidth))
+        drawerWidth = max(1, width - scrollerWidth)
+        gridHeights = Dictionary(uniqueKeysWithValues: visibleDrawerGrids.map { grid in
+            (grid, grid.layoutContent(width: drawerWidth))
+        })
+        positionDrawerGrids()
+        return drawerGrids.reduce(CGFloat(max(0, drawerGrids.count - 1))) { height, grid in
+            height + (gridHeights[grid] ?? 0)
+        }
     }
+
+    private func positionDrawerGrids() {
+        let previous = drawerTransition?.previous ?? drawerGrids
+        let progress = drawerTransition?.windowHeights.map {
+            min(1, max(0, (bounds.height - $0.start) / ($0.end - $0.start)))
+        } ?? 0
+        let oldDivider: CGFloat = previous.count > 1 ? 1 : 0
+        let newDivider: CGFloat = drawerGrids.count > 1 ? 1 : 0
+        let dividerHeight = oldDivider + (newDivider - oldDivider) * progress
+        var y: CGFloat = 0
+        drawerDivider.isHidden = dividerHeight == 0
+        for (index, grid) in visibleDrawerGrids.enumerated() {
+            if index > 0 {
+                drawerDivider.frame = NSRect(x: 0, y: y, width: drawerWidth, height: dividerHeight)
+                y += dividerHeight
+            }
+            let oldScale: CGFloat = previous.contains(grid) ? 1 : 0
+            let newScale: CGFloat = drawerGrids.contains(grid) ? 1 : 0
+            let scale = oldScale + (newScale - oldScale) * progress
+            let height = (gridHeights[grid] ?? 0) * scale
+            grid.frame = NSRect(x: 0, y: y, width: drawerWidth, height: height)
+            y += height
+        }
+        drawerContent.setFrameSize(NSSize(width: drawerWidth, height: y))
+    }
+}
+
+private final class DrawerContentView: NSView {
+    override var isFlipped: Bool { true }
 }

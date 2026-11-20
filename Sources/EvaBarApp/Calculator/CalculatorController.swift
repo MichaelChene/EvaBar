@@ -15,7 +15,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private var bar: CalculatorBarView { panelView.bar }
     private var aboutWindow: AboutWindow?
     private var reference: DrawerGrid?
-    private var drawer: Drawer?
+    private var drawers: Set<Drawer> = []
     private var resultText: String?
     private var copiedTimer: Timer?
     private var revealTask: Task<Void, Never>?
@@ -80,7 +80,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     func controlTextDidChange(_ notification: Notification) { updateResult() }
 
     func windowDidBecomeKey(_ notification: Notification) {
-        if drawer == .preferences {
+        if drawers.contains(.preferences) {
             preferences.refreshStartup()
             resizePanel()
         }
@@ -120,7 +120,6 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         preferences.onFormatChange = { [weak self] in
             guard let self else { return }
             self.updateResult()
-            if self.drawer == .preferences { self.resizePanel() }
         }
         preferences.onRecord = { [weak self] in self?.beginShortcutRecording() }
         preferences.onClear = { [weak self] in self?.clearShortcut() }
@@ -138,11 +137,10 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
             connectPreferences()
         }
         onLanguageChange?()
+        isRecordingShortcut = false
+        refreshDrawers()
         updateResult()
-        if drawer == .preferences {
-            isRecordingShortcut = false
-            showPreferences()
-            resizePanel()
+        if !drawers.isEmpty {
             panel.recalculateKeyViewLoop()
         }
     }
@@ -206,7 +204,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
                 if ready || clock.now >= deadline {
                     self.revealTask = nil
                     self.resizePanel(animated: ready, on: screen)
-                    if self.drawer != nil { self.panelView.scrollDrawerToTop() }
+                    if !self.drawers.isEmpty { self.panelView.scrollDrawerToTop() }
                     if self.panel.isOnActiveSpace && !self.panel.isKeyWindow {
                         self.panel.makeKey()
                         self.panel.makeFirstResponder(self.bar.expression)
@@ -247,7 +245,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         clearCopyFeedback()
         panel.ignoresMouseEvents = false
         isClosing = false
-        setDrawer(nil)
+        setDrawers([])
     }
 
     private var statusButtonFrame: NSRect? {
@@ -299,8 +297,8 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private func panelFrame(on screen: NSScreen? = nil) -> NSRect? {
         guard let screen = screen ?? panel.screen ?? NSScreen.main else { return nil }
         let available = CalculatorPanel.availableFrame(on: screen)
-        let barHeight = CalculatorPanel.barHeight
-        let drawerHeight = drawer == nil ? 0 : panelView.drawerHeight(fittingWidth: available.width)
+        let barHeight = bar.height(fittingWidth: available.width)
+        let drawerHeight = panelView.drawerHeight(fittingWidth: available.width)
         let height = min(available.height, barHeight + drawerHeight)
         return NSRect(x: available.minX, y: available.maxY - height, width: available.width, height: height)
     }
@@ -310,41 +308,41 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         if panel.frame != frame {
             // Keep the intermediate viewport sizes from making the scrollbar flash.
             panelView.setDrawerScrollerEnabled(false)
+            panelView.prepareDrawerTransition(from: panel.frame.height, to: frame.height)
             panel.resize(to: frame, animated: animated)
         }
-        panelView.setDrawerScrollerEnabled(drawer != nil)
+        panelView.finishDrawerTransition()
+        panelView.layoutSubtreeIfNeeded()
+        panelView.setDrawerScrollerEnabled(!drawers.isEmpty)
     }
 
-    private func setDrawer(_ newDrawer: Drawer?) {
-        guard drawer != newDrawer else { return }
+    private func setDrawers(_ selection: Set<Drawer>) {
+        guard drawers != selection else { return }
         isRecordingShortcut = false
-        drawer = newDrawer
-
-        switch newDrawer {
-        case .functions:
-            if reference == nil { reference = FunctionReference.makeGrid() }
-            panelView.showDrawer(reference)
-        case .preferences:
-            showPreferences()
-        case nil:
-            panelView.showDrawer(nil)
-        }
+        drawers = selection
+        refreshDrawers(animated: panel.isVisible && revealTask == nil && panel.allowsMotion)
 
         if panel.isVisible {
             resizePanel(animated: true)
-            if newDrawer != nil && revealTask == nil { panelView.scrollDrawerToTop() }
-        }
-
-        if panel.isVisible {
+            if !drawers.isEmpty && revealTask == nil { panelView.scrollDrawerToTop() }
             panel.recalculateKeyViewLoop()
             if bar.expression.currentEditor() == nil { panel.makeFirstResponder(bar.expression) }
         }
     }
 
-    private func showPreferences() {
-        panelView.showDrawer(preferences.grid)
-        preferences.refreshStartup()
-        preferences.updateShortcut(shortcuts.shortcut, recording: false, message: nil)
+    private func refreshDrawers(animated: Bool = false) {
+        var grids: [DrawerGrid] = []
+        if drawers.contains(.preferences) {
+            grids.append(preferences.grid)
+            preferences.refreshStartup()
+            preferences.updateShortcut(shortcuts.shortcut, recording: false, message: nil)
+        }
+        if drawers.contains(.functions) {
+            let grid = reference ?? FunctionReference.makeGrid()
+            reference = grid
+            grids.append(grid)
+        }
+        panelView.showDrawers(grids, animated: animated)
     }
 
     private func updateResult() {
@@ -352,19 +350,19 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         let source = bar.expression.stringValue
         let format = preferences.format
         do {
-            let text = if source.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                format.string(0)
-            } else {
-                format.string(try Expression.evaluate(source))
-            }
+            let text = try format.string(forExpression: source)
             resultText = text
             bar.showResult(text)
         } catch {
             resultText = nil
-            let messages = (error as? CalculationError)?.messages
+            let calculationError = error as? CalculationError
+            let messages = calculationError?.messages
                 ?? (summary: L10n.text("Invalid expression"), detail: L10n.text("Check the expression and try again."))
-            bar.showResult(messages.summary, errorDetail: messages.detail)
+            bar.showResult(messages.summary, errorDetail: messages.detail,
+                           preservingResult: calculationError?.isEditingError == true)
         }
+        panelView.needsLayout = true
+        if panel.isVisible { resizePanel(animated: true) }
     }
 
     private func handleKey(_ event: NSEvent) -> NSEvent? {
@@ -374,8 +372,8 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         if event.keyCode == kVK_Escape {
             if isRecordingShortcut {
                 endShortcutRecording()
-            } else if drawer != nil {
-                setDrawer(nil)
+            } else if !drawers.isEmpty {
+                setDrawers([])
             } else {
                 hidePanel()
             }
@@ -437,12 +435,17 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     @objc func openPreferences() {
         guard !isClosing else { return }
         presentPanel()
-        setDrawer(.preferences)
+        setDrawers(drawers.union([.preferences]))
     }
 
-    @objc private func toggleFunctions() { setDrawer(drawer == .functions ? nil : .functions) }
-    @objc private func togglePreferences() { setDrawer(drawer == .preferences ? nil : .preferences) }
-    @objc private func collapseDrawer() { setDrawer(nil) }
+    @objc private func toggleFunctions() { setDrawers(drawers.symmetricDifference([.functions])) }
+    @objc private func togglePreferences() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.panel.isVisible, !self.isClosing else { return }
+            self.setDrawers(self.drawers.symmetricDifference([.preferences]))
+        }
+    }
+    @objc private func collapseDrawer() { setDrawers([]) }
 
     @objc private func showMenu() {
         let menu = NSMenu()
@@ -471,7 +474,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
 
     private func updateShortcutControls(message: String? = nil) {
         preferences.updateShortcut(shortcuts.shortcut, recording: isRecordingShortcut, message: message)
-        if drawer == .preferences { resizePanel() }
+        if drawers.contains(.preferences) { resizePanel() }
     }
 
     private func beginShortcutRecording() {
