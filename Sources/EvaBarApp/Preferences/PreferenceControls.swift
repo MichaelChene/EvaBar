@@ -58,18 +58,83 @@ final class SeparatorPicker: NSPopUpButton {
 
 @MainActor
 final class StartupSwitch: NSButton {
-    override func draw(_ dirtyRect: NSRect) {
+    private let trackLayer = CALayer()
+    private let thumbLayer = CALayer()
+    private var showsOn = false
+
+    override init(frame frameRect: NSRect) {
+        super.init(frame: frameRect)
+        wantsLayer = true
+        trackLayer.borderWidth = 1
+        trackLayer.borderColor = NSColor(white: 0.62, alpha: 0.35).cgColor
+        thumbLayer.backgroundColor = NSColor(white: 0.8, alpha: 1).cgColor
+        layer?.addSublayer(trackLayer)
+        layer?.addSublayer(thumbLayer)
+    }
+
+    required init?(coder: NSCoder) { nil }
+
+    func updateState(_ newState: NSControl.StateValue, animated: Bool) {
+        allowsMixedState = newState == .mixed
+        state = newState
+        showsOn = newState != .off
+        updateLayers(animated: animated && window?.isVisible == true
+                     && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion)
+    }
+
+    override func layout() {
+        super.layout()
+        updateLayers()
+    }
+
+    override func viewDidChangeEffectiveAppearance() {
+        super.viewDidChangeEffectiveAppearance()
+        updateLayers()
+    }
+
+    // The layers supply the switch artwork while NSButton handles interaction.
+    override func draw(_ dirtyRect: NSRect) {}
+
+    private func updateLayers(animated: Bool = false) {
+        guard bounds.width > 3, bounds.height > 3 else { return }
         let track = bounds.insetBy(dx: 0.5, dy: 0.5)
-        let enabled = state != .off
-        (enabled ? NSColor.controlAccentColor : NSColor(white: 0.24, alpha: 0.75)).setFill()
-        let path = NSBezierPath(roundedRect: track, xRadius: 11, yRadius: 11)
-        path.fill()
-        NSColor(white: 0.62, alpha: 0.35).setStroke()
-        path.stroke()
         let diameter = track.height - 2
-        let x = enabled ? track.maxX - diameter - 1 : track.minX + 1
-        NSColor(white: 0.8, alpha: 1).setFill()
-        NSBezierPath(ovalIn: NSRect(x: x, y: track.minY + 1, width: diameter, height: diameter)).fill()
+        let inset = 1 + diameter / 2
+        let position = CGPoint(x: showsOn ? track.maxX - inset : track.minX + inset, y: track.midY)
+
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        trackLayer.frame = track
+        trackLayer.cornerRadius = track.height / 2
+        thumbLayer.bounds.size = CGSize(width: diameter, height: diameter)
+        thumbLayer.cornerRadius = diameter / 2
+
+        effectiveAppearance.performAsCurrentDrawingAppearance {
+            let color = (showsOn ? NSColor.controlAccentColor : NSColor(white: 0.24, alpha: 0.75)).cgColor
+            if trackLayer.backgroundColor != color {
+                let previous = trackLayer.presentation()?.backgroundColor ?? trackLayer.backgroundColor
+                trackLayer.backgroundColor = color
+                transition(trackLayer, keyPath: "backgroundColor", from: previous, animated: animated)
+            }
+        }
+        if thumbLayer.position != position {
+            let previous = thumbLayer.presentation()?.position ?? thumbLayer.position
+            thumbLayer.position = position
+            transition(thumbLayer, keyPath: "position", from: previous, animated: animated)
+        }
+        CATransaction.commit()
+    }
+
+    private func transition(_ layer: CALayer, keyPath: String, from value: Any?, animated: Bool) {
+        guard animated, let value else {
+            layer.removeAnimation(forKey: keyPath)
+            return
+        }
+        let animation = CABasicAnimation(keyPath: keyPath)
+        animation.fromValue = value
+        animation.duration = 0.2
+        animation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+        layer.add(animation, forKey: keyPath)
     }
 }
 

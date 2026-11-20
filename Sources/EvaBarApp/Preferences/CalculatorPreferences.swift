@@ -223,11 +223,10 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         DispatchQueue.main.async { [weak self] in self?.onLanguageChange?() }
     }
 
-    func refreshStartup(error: String? = nil) {
+    func refreshStartup(error: String? = nil, animated: Bool = false) {
         let status = SMAppService.mainApp.status
-        startup.allowsMixedState = status == .requiresApproval
-        startup.state = status == .enabled ? .on : status == .requiresApproval ? .mixed : .off
-        startup.needsDisplay = true
+        let state: NSControl.StateValue = status == .enabled ? .on : status == .requiresApproval ? .mixed : .off
+        startup.updateState(state, animated: animated)
         startupMessage.title = error ?? L10n.text("Allow in System Settings")
         startupMessage.isHidden = error == nil && status != .requiresApproval
     }
@@ -269,7 +268,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
             } else {
                 try service.register()
             }
-            refreshStartup()
+            refreshStartup(animated: true)
         } catch {
             refreshStartup(error: L10n.text("Could not update login item"))
         }
