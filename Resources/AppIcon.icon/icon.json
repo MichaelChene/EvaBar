@@ -1,0 +1,21 @@
+{
+  "fill" : {
+    "solid" : "extended-srgb:1.00000,1.00000,1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "Mark.svg",
+          "name" : "f",
+          "position" : { "scale" : 1, "translation-in-points" : [ 0, 0 ] }
+        }
+      ],
+      "shadow" : { "kind" : "neutral", "opacity" : 0.55 },
+      "translucency" : { "enabled" : true, "value" : 0.23 }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [ "macOS" ]
+  }
+}

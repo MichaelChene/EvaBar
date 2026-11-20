@@ -1,0 +1,198 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B00000000000000000000008 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000008 /* AppIcon.icon */; };
+		B00000000000000000000009 /* EvaBarAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F00000000000000000000009 /* EvaBarAssets.xcassets */; };
+		B0000000000000000000000A /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = F0000000000000000000000A /* Localizable.xcstrings */; };
+		B0000000000000000000000B /* EvaBarCore in Frameworks */ = {isa = PBXBuildFile; productRef = D00000000000000000000002 /* EvaBarCore */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F00000000000000000000008 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		F00000000000000000000009 /* EvaBarAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = EvaBarAssets.xcassets; sourceTree = "<group>"; };
+		F0000000000000000000000A /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		F0000000000000000000000B /* EvaBar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EvaBar.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0000000000000000000000C /* EvaBar.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = EvaBar.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A00000000000000000000002 /* Sources/EvaBarApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Sources/EvaBarApp;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A00000000000000000000008 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (B0000000000000000000000B /* EvaBarCore in Frameworks */);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000002 /* Sources/EvaBarApp */,
+				A00000000000000000000003 /* Resources */,
+				F0000000000000000000000C /* EvaBar.xcconfig */,
+				A00000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A00000000000000000000003 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F00000000000000000000008 /* AppIcon.icon */,
+				F00000000000000000000009 /* EvaBarAssets.xcassets */,
+				F0000000000000000000000A /* Localizable.xcstrings */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (F0000000000000000000000B /* EvaBar.app */);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A00000000000000000000005 /* EvaBar */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C00000000000000000000002 /* Build configuration list for PBXNativeTarget "EvaBar" */;
+			buildPhases = (
+				A00000000000000000000006 /* Sources */,
+				A00000000000000000000008 /* Frameworks */,
+				A00000000000000000000007 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			fileSystemSynchronizedGroups = (A00000000000000000000002 /* Sources/EvaBarApp */);
+			name = EvaBar;
+			packageProductDependencies = (D00000000000000000000002 /* EvaBarCore */);
+			productName = EvaBar;
+			productReference = F0000000000000000000000B /* EvaBar.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000000 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {BuildIndependentTargetsInParallel = YES; LastUpgradeCheck = 2720; };
+			buildConfigurationList = C00000000000000000000001 /* Build configuration list for PBXProject "EvaBar" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, "zh-Hans", "zh-Hant", ja, ko, de, fr, es, "pt-BR", it);
+			mainGroup = A00000000000000000000001;
+			packageReferences = (D00000000000000000000001 /* Local package */);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = A00000000000000000000004 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (A00000000000000000000005 /* EvaBar */);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000008 /* AppIcon.icon in Resources */,
+				B00000000000000000000009 /* EvaBarAssets.xcassets in Resources */,
+				B0000000000000000000000A /* Localizable.xcstrings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00000000000000000000006 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C00000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		C00000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		C00000000000000000000005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0000000000000000000000C /* EvaBar.xcconfig */;
+			buildSettings = {};
+			name = Debug;
+		};
+		C00000000000000000000006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F0000000000000000000000C /* EvaBar.xcconfig */;
+			buildSettings = {};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C00000000000000000000001 /* Build configuration list for PBXProject "EvaBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (C00000000000000000000003 /* Debug */, C00000000000000000000004 /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C00000000000000000000002 /* Build configuration list for PBXNativeTarget "EvaBar" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (C00000000000000000000005 /* Debug */, C00000000000000000000006 /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		D00000000000000000000001 /* Local package */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ".";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D00000000000000000000002 /* EvaBarCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D00000000000000000000001 /* Local package */;
+			productName = EvaBarCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = A00000000000000000000000 /* Project object */;
+}

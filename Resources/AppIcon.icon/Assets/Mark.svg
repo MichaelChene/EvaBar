@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="letter" gradientUnits="userSpaceOnUse" x1="502" y1="252" x2="269" y2="722">
+      <stop offset="0" stop-color="#19BFE1"/>
+      <stop offset=".2" stop-color="#559AE1"/>
+      <stop offset=".4" stop-color="#5F69EF"/>
+      <stop offset=".59" stop-color="#6936FC"/>
+      <stop offset=".77" stop-color="#7735FF"/>
+      <stop offset="1" stop-color="#9E38FF"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#letter)" transform="translate(141.5 21.5)" d="
+    M332 428 H234.5 A43.5 43.5 0 0 0 234.5 515 H331
+    C328.2 569.5 338.3 646.8 292 679
+    C279 685.9 264.2 681.9 250 681
+    C199.4 685.8 194 754.8 244 767
+    C284.9 773.3 324.3 766 355 741
+    C419.1 685 415.2 597.4 418 515
+    H506.5 A43.5 43.5 0 0 0 506.5 428 H421
+    C422.4 370.4 442.8 300.3 511 295
+    C567.7 286.3 557.3 203.5 500 210
+    C382.9 221.4 340.7 326.2 332 428 Z"/>
+</svg>
