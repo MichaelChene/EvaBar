@@ -1,0 +1,150 @@
+---
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+import "../styles.css";
+import { CodeXml, Keyboard, LaptopMinimal, Pin, SlidersHorizontal } from "lucide-react";
+import { CalculatorPreview } from "@/components/calculator-preview";
+import { FAQ } from "@/components/faq";
+import { buttonVariants } from "@/components/ui/button";
+import { getLatestRelease, releasesUrl, repositoryUrl } from "@/lib/release";
+
+const release = await getLatestRelease();
+const title = "EvaBar — CalcBar Alternative for Apple Silicon Macs";
+const description = "EvaBar (formerly CalcBar2) is a free, open-source CalcBar alternative for Apple silicon Macs, with a floating calculator, global shortcut and live results.";
+const canonical = new URL("/", Astro.site).href;
+const screenshot = {
+  src: "/images/evabar-preferences.webp",
+  width: 3760,
+  height: 870,
+  alt: "EvaBar in Simplified Chinese, with the calculator bar, Preferences and function reference open together",
+};
+const shareImage = new URL(screenshot.src, canonical).href;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "EvaBar",
+  alternateName: "CalcBar2",
+  url: canonical,
+  description,
+  operatingSystem: "macOS 13 or later",
+  applicationCategory: "UtilitiesApplication",
+  isAccessibleForFree: true,
+  screenshot: shareImage,
+  downloadUrl: release?.downloadUrl ?? releasesUrl,
+  softwareVersion: release?.version,
+  license: `${repositoryUrl}/blob/main/LICENSE`,
+  offers: { "@type": "Offer", price: 0, priceCurrency: "USD", url: release?.releaseUrl ?? releasesUrl },
+};
+const features = [
+  { icon: Keyboard, heading: "Always a shortcut away", description: "Open the floating bar from any app, type your expression, and press Return to copy the result." },
+  { icon: Pin, heading: "Keep it in view", description: "Click the lock to keep EvaBar above your workspace. Unlock it to dismiss the bar by clicking anywhere else." },
+  { icon: SlidersHorizontal, heading: "Numbers on your terms", description: "Set the decimal precision and choose your decimal and thousands separators in Preferences." },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#101016" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="EvaBar" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content={String(screenshot.width)} />
+    <meta property="og:image:height" content={String(screenshot.height)} />
+    <meta property="og:image:alt" content={screenshot.alt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="/images/evabar-icon.png" />
+    <link rel="apple-touch-icon" href="/images/evabar-icon.png" />
+    <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")} />
+  </head>
+  <body id="top">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="#top" aria-label="EvaBar home">
+          <img src="/images/evabar-icon.png" alt="" width="32" height="32" />
+          <span>EvaBar</span>
+        </a>
+        <nav class="primary-nav" aria-label="Main navigation">
+          <a href="#preview">Preview</a>
+          <a href="#features">Features</a>
+          <a href="#quick-start">Quick start</a>
+        </nav>
+        <a class={buttonVariants({ variant: "ghost", class: "header-source" })} href={repositoryUrl}>
+          <CodeXml aria-hidden="true" /> GitHub
+        </a>
+      </div>
+    </header>
+    <main id="main">
+      <section class="hero shell" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <img class="hero-icon" src="/images/evabar-icon.png" alt="" width="85" height="85" />
+          <p class="eyebrow">The menu bar calculator for Mac</p>
+          <h1 id="hero-title">Do the math.<br /><span>Stay in flow.</span></h1>
+          <p class="hero-description">EvaBar, formerly CalcBar2, is a calculator that floats above your work. Type an expression and copy the result without switching apps.</p>
+          <div class="hero-actions">
+            <a class={buttonVariants({ size: "lg", class: "download-button" })} href={release?.downloadUrl ?? releasesUrl}>
+              <LaptopMinimal aria-hidden="true" /> {release ? "Download for Mac" : "View Mac downloads"}
+            </a>
+            {release && <a class={buttonVariants({ size: "lg", variant: "outline" })} href={release.releaseUrl}>Release notes</a>}
+          </div>
+          <p class="requirements"><span>macOS 13+</span><span>Apple silicon</span>{release && <span>{release.version}</span>}</p>
+        </div>
+        <div id="preview" class="preview-anchor">
+          <CalculatorPreview client:load />
+        </div>
+      </section>
+
+      <section id="features" class="shell content-section" aria-labelledby="features-title">
+        <p class="eyebrow">Features</p>
+        <h2 id="features-title">A little bar that does a lot.</h2>
+        <div class="feature-grid">
+          {features.map(({ icon: Icon, heading, description }) => (
+            <article class="feature-card">
+              <span class="feature-icon"><Icon size={20} strokeWidth={1.7} aria-hidden="true" /></span>
+              <h3>{heading}</h3>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="quick-start" class="shell content-section guide" aria-labelledby="guide-title">
+        <div>
+          <p class="eyebrow">Quick start</p>
+          <h2 id="guide-title">One shortcut.<br />Any workspace.</h2>
+          <div class="key-chord" aria-label="Control, Shift, Space">
+            <kbd aria-hidden="true">⌃</kbd><kbd aria-hidden="true">⇧</kbd><kbd aria-hidden="true">Space</kbd>
+          </div>
+        </div>
+        <ol class="guide-steps">
+          <li><span>1</span><div><h3>Install EvaBar</h3><p>Unzip the download and move EvaBar.app to your Applications folder.</p></div></li>
+          <li><span>2</span><div><h3>Open the bar</h3><p>Click EvaBar in the menu bar or press Control–Shift–Space.</p></div></li>
+          <li><span>3</span><div><h3>Type and copy</h3><p>Enter a calculation and press Return to copy the result.</p></div></li>
+        </ol>
+      </section>
+
+      <section class="shell content-section questions" aria-labelledby="questions-title">
+        <h2 id="questions-title">Common questions</h2>
+        <FAQ client:visible />
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="shell footer-inner">
+        <a class="brand" href="#top" aria-label="EvaBar home"><img src="/images/evabar-icon.png" alt="" width="30" height="30" /> EvaBar</a>
+        <nav aria-label="Footer navigation">
+          <a href={releasesUrl}>Releases</a>
+          <a href={`${repositoryUrl}/issues`}>Issues</a>
+          <a href={`${repositoryUrl}/blob/main/LICENSE`}>MIT License</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

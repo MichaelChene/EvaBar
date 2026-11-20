@@ -1,0 +1,61 @@
+name: Deploy EvaBar website
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: ${{ !github.event.release.prerelease && !github.event.release.draft }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: evabar-site-production
+      cancel-in-progress: true
+    defaults:
+      run:
+        working-directory: site
+    env:
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run check
+      - name: Build and verify the release download
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          npm run build
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+
+          const tag = encodeURIComponent(process.env.RELEASE_TAG);
+          const expected = `https://github.com/MichaelChene/EvaBar/releases/download/${tag}/`;
+          const html = readFileSync('dist/index.html', 'utf8');
+          if (!html.includes(`href="${expected}`)) {
+            throw new Error(`The site did not select an Apple silicon download from ${process.env.RELEASE_TAG}.`);
+          }
+          NODE
+      - name: Package Vercel build output
+        run: |
+          mkdir -p .vercel/output/static
+          cp -R dist/. .vercel/output/static/
+          printf '%s\n' '{"version":3}' > .vercel/output/config.json
+      - name: Deploy to production
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+        run: |
+          : "${VERCEL_TOKEN:?Set the VERCEL_TOKEN repository secret}"
+          : "${VERCEL_ORG_ID:?Set the VERCEL_ORG_ID repository variable}"
+          : "${VERCEL_PROJECT_ID:?Set the VERCEL_PROJECT_ID repository variable}"
+          npx --yes vercel@66.5.0 deploy --prebuilt --prod --yes --token "$VERCEL_TOKEN"
