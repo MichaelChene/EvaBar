@@ -2,15 +2,27 @@
 import "@fontsource-variable/geist";
 import "@fontsource-variable/geist-mono";
 import "../styles.css";
-import { CodeXml, Keyboard, LaptopMinimal, Pin, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, CodeXml, Keyboard, LaptopMinimal, Pin, SlidersHorizontal } from "lucide-react";
 import { CalculatorPreview } from "@/components/calculator-preview";
 import { FAQ } from "@/components/faq";
 import { buttonVariants } from "@/components/ui/button";
-import { getLatestRelease, releasesUrl, repositoryUrl } from "@/lib/release";
+import { getMacDownloads, releasesUrl, repositoryUrl } from "@/lib/release";
 
-const release = await getLatestRelease();
-const title = "EvaBar — CalcBar Alternative for Apple Silicon Macs";
-const description = "EvaBar (formerly CalcBar2) is a free, open-source CalcBar alternative for Apple silicon Macs, with a floating calculator, global shortcut and live results.";
+const { arm64, intel } = await getMacDownloads() ?? {};
+const hasDownloads = Boolean(arm64 || intel);
+const differentVersions = arm64 && intel && arm64.version !== intel.version;
+const release = differentVersions ? undefined : arm64 ?? intel;
+const releaseNotesUrl = release?.releaseUrl ?? releasesUrl;
+const downloadOptions = arm64 && arm64.url === intel?.url ? [
+  { label: "Universal", architecture: "Apple silicon and Intel", download: arm64 },
+] : [
+  { label: "Apple silicon", architecture: "ARM64", download: arm64 },
+  { label: "Intel", architecture: "x86_64", download: intel },
+];
+const downloadUrls = downloadOptions.flatMap(({ download }) => download ? [download.url] : []);
+const chipSupport = [arm64 ? "Apple silicon" : null, intel ? "Intel" : null].filter(Boolean).join(" and ") || null;
+const title = "EvaBar — CalcBar Alternative for Mac";
+const description = "EvaBar (formerly CalcBar2) is a free, open-source CalcBar alternative for Mac, with a floating calculator, global shortcut and live results.";
 const canonical = new URL("/", Astro.site).href;
 const screenshot = {
   src: "/images/evabar-preferences.webp",
@@ -30,10 +42,10 @@ const structuredData = {
   applicationCategory: "UtilitiesApplication",
   isAccessibleForFree: true,
   screenshot: shareImage,
-  downloadUrl: release?.downloadUrl ?? releasesUrl,
+  downloadUrl: downloadUrls.length ? downloadUrls : releasesUrl,
   softwareVersion: release?.version,
   license: `${repositoryUrl}/blob/main/LICENSE`,
-  offers: { "@type": "Offer", price: 0, priceCurrency: "USD", url: release?.releaseUrl ?? releasesUrl },
+  offers: { "@type": "Offer", price: 0, priceCurrency: "USD", url: releaseNotesUrl },
 };
 const features = [
   { icon: Keyboard, heading: "Always a shortcut away", description: "Open the floating bar from any app, type your expression, and press Return to copy the result." },
@@ -90,12 +102,36 @@ const features = [
           <h1 id="hero-title">Do the math.<br /><span>Stay in flow.</span></h1>
           <p class="hero-description">EvaBar, formerly CalcBar2, is a calculator that floats above your work. Type an expression and copy the result without switching apps.</p>
           <div class="hero-actions">
-            <a class={buttonVariants({ size: "lg", class: "download-button" })} href={release?.downloadUrl ?? releasesUrl}>
-              <LaptopMinimal aria-hidden="true" /> {release ? "Download for Mac" : "View Mac downloads"}
-            </a>
-            {release && <a class={buttonVariants({ size: "lg", variant: "outline" })} href={release.releaseUrl}>Release notes</a>}
+            {hasDownloads ? (
+              <details class="download-menu" id="mac-downloads">
+                <summary class={buttonVariants({ size: "lg", class: "download-button" })}>
+                  <LaptopMinimal aria-hidden="true" /> Download for Mac <ChevronDown className="download-chevron" aria-hidden="true" />
+                </summary>
+                <ul class="download-options">
+                  {downloadOptions.map(({ label, architecture, download }) => (
+                    <li>
+                      {download ? (
+                        <a class="download-option" href={download.url}>
+                          <span class="download-platform">{label}<small>{architecture}</small></span>
+                          <small class="download-version">{download.version}</small>
+                        </a>
+                      ) : (
+                        <span class="download-option download-unavailable">
+                          {label}<small>Unavailable</small>
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ) : (
+              <a class={buttonVariants({ size: "lg", class: "download-button" })} href={releasesUrl}>
+                <LaptopMinimal aria-hidden="true" /> View Mac downloads
+              </a>
+            )}
+            {hasDownloads && <a class={buttonVariants({ size: "lg", variant: "outline" })} href={releaseNotesUrl}>Release notes</a>}
           </div>
-          <p class="requirements"><span>macOS 13+</span><span>Apple silicon</span>{release && <span>{release.version}</span>}</p>
+          <p class="requirements"><span>macOS 13+</span>{chipSupport && <span>{chipSupport}</span>}{release && <span>{release.version}</span>}</p>
         </div>
         <div id="preview" class="preview-anchor">
           <CalculatorPreview client:load />
@@ -133,7 +169,7 @@ const features = [
 
       <section class="shell content-section questions" aria-labelledby="questions-title">
         <h2 id="questions-title">Common questions</h2>
-        <FAQ client:visible />
+        <FAQ chipSupport={chipSupport} client:visible />
       </section>
     </main>
     <footer class="site-footer">
@@ -148,3 +184,21 @@ const features = [
     </footer>
   </body>
 </html>
+
+<script>
+  const downloads = document.querySelector<HTMLDetailsElement>("#mac-downloads");
+  const trigger = downloads?.querySelector("summary");
+  if (downloads && trigger) {
+    document.addEventListener("click", (event) => {
+      if (downloads.open && event.target instanceof Node && !downloads.contains(event.target)) {
+        downloads.open = false;
+      }
+    });
+    downloads.addEventListener("keydown", (event) => {
+      if (downloads.open && event.key === "Escape") {
+        downloads.open = false;
+        trigger.focus();
+      }
+    });
+  }
+</script>

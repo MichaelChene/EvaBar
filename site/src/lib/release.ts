@@ -11,7 +11,9 @@ type GitHubRelease = {
   assets: { name: string; state: string; browser_download_url: string }[];
 };
 
-export async function getLatestRelease() {
+type MacDownload = { url: string; version: string; releaseUrl: string };
+
+export async function getMacDownloads() {
   try {
     const response = await fetch(`https://api.github.com/repos/${repository}/releases?per_page=100`, {
       headers: { Accept: "application/vnd.github+json" },
@@ -25,15 +27,24 @@ export async function getLatestRelease() {
       return (right.published_at ?? "").localeCompare(left.published_at ?? "");
     });
 
+    let arm64: MacDownload | undefined;
+    let intel: MacDownload | undefined;
     for (const release of releases) {
       if (release.draft || !release.published_at) continue;
-      const asset = release.assets.find(
-        ({ name, state }) => state === "uploaded" && /^EvaBar(?:-.+)?-arm64\.(zip|dmg)$/i.test(name),
-      );
-      if (asset) {
-        return { version: release.tag_name, releaseUrl: release.html_url, downloadUrl: asset.browser_download_url };
+      const uploaded = release.assets.filter(({ state }) => state === "uploaded");
+      const universal = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-universal\.(zip|dmg)$/i.test(name));
+      const arm64Asset = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-arm64\.(zip|dmg)$/i.test(name)) ?? universal;
+      const intelAsset = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-(x86_64|intel)\.(zip|dmg)$/i.test(name)) ?? universal;
+      const releaseDetails = { version: release.tag_name, releaseUrl: release.html_url };
+      if (!arm64 && arm64Asset) {
+        arm64 = { url: arm64Asset.browser_download_url, ...releaseDetails };
       }
+      if (!intel && intelAsset) {
+        intel = { url: intelAsset.browser_download_url, ...releaseDetails };
+      }
+      if (arm64 && intel) break;
     }
+    if (arm64 || intel) return { arm64, intel };
   } catch (error) {
     console.warn("Could not fetch EvaBar releases. Linking to the releases page.", error);
   }

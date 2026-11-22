@@ -127,6 +127,38 @@ h1, h2, h3 { text-wrap: balance; }
 }
 .hero-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: .625rem; margin-top: 1.6rem; }
 .download-button { box-shadow: 0 6px 22px #b290f328; font-weight: 650; }
+.download-menu { position: relative; }
+.download-menu summary { cursor: pointer; list-style: none; }
+.download-menu summary::-webkit-details-marker { display: none; }
+.download-menu[open] .download-chevron { transform: rotate(180deg); }
+.download-options {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + .5rem);
+  left: 50%;
+  width: max(100%, 14.5rem);
+  padding: .25rem;
+  transform: translateX(-50%);
+  border: 1px solid var(--border);
+  border-radius: .625rem;
+  background: var(--card);
+  box-shadow: 0 12px 28px #0006;
+}
+.download-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
+  padding: .625rem;
+  border-radius: .375rem;
+  font-size: .875rem;
+  font-weight: 550;
+}
+a.download-option:hover, a.download-option:focus-visible { background: var(--accent); }
+.download-option small { color: var(--muted-foreground); font-size: .75rem; }
+.download-platform { display: grid; gap: .125rem; text-align: left; }
+.download-version { text-align: right; overflow-wrap: anywhere; }
+.download-unavailable { color: var(--muted-foreground); }
 .requirements {
   display: flex;
   flex-wrap: wrap;

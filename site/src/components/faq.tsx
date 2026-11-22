@@ -1,11 +1,14 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
-export function FAQ() {
+export function FAQ({ chipSupport }: { chipSupport: string | null }) {
   return (
     <Accordion type="single" collapsible className="faq-list">
       <AccordionItem value="compatibility">
         <AccordionTrigger>Which Macs can run EvaBar?</AccordionTrigger>
-        <AccordionContent>The current release requires macOS 13 or later and a Mac with Apple silicon.</AccordionContent>
+        <AccordionContent>
+          EvaBar requires macOS 13 or later.{" "}
+          {chipSupport ? `Downloads are available for ${chipSupport} Macs.` : "See the release notes for supported Mac models."}
+        </AccordionContent>
       </AccordionItem>
       <AccordionItem value="expressions">
         <AccordionTrigger>How do I write expressions?</AccordionTrigger>

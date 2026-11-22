@@ -1,14 +1,14 @@
 <p align="center"><img src="docs/images/evabar-icon.png" width="96" alt="EvaBar icon"></p>
 <h1 align="center">EvaBar</h1>
 <p align="center">A floating, keyboard-first calculator for the macOS menu bar.</p>
-<p align="center"><strong>macOS 13+ · Apple Silicon</strong></p>
+<p align="center"><strong>macOS 13+ · Apple silicon and Intel</strong></p>
 <p align="center"><a href="https://github.com/MichaelChene/EvaBar/releases">Releases</a> · <a href="#quick-start">Quick start</a> · <a href="#build">Build</a></p>
 
 ![EvaBar showing a live calculation in its floating bar](docs/images/evabar-bar.png)
 
 ## Quick start
 
-1. Get `EvaBar.app` from [Releases](https://github.com/MichaelChene/EvaBar/releases) and move it to Applications.
+1. Choose the Apple silicon (`arm64`) or Intel (`x86_64`) download for your Mac from [Releases](https://github.com/MichaelChene/EvaBar/releases). A universal download works on both. Unzip the package and move `EvaBar.app` to Applications.
 2. Click the menu bar icon or press <kbd>Control</kbd>–<kbd>Shift</kbd>–<kbd>Space</kbd>.
 3. Type an expression and press <kbd>Return</kbd> to copy the result.
 
@@ -33,10 +33,28 @@ With Xcode 27 and Swift 6, open [EvaBar.xcodeproj](EvaBar.xcodeproj), choose the
 
 ```sh
 xcodebuild -project EvaBar.xcodeproj -scheme EvaBar \
-  -configuration Release -destination 'platform=macOS,arch=arm64' \
+  -configuration Release -destination 'generic/platform=macOS' \
   -derivedDataPath Build/DerivedData CONFIGURATION_BUILD_DIR="$PWD/Build" build
 open Build/EvaBar.app
 swift test
+```
+
+To create separate ZIPs for GitHub Releases, set `version` to the release version and run this from the project root.
+
+```sh
+(
+  set -e
+  version=1.0.0
+  mkdir -p Build/Release
+  for architecture in arm64 x86_64; do
+    xcodebuild -project EvaBar.xcodeproj -scheme EvaBar \
+      -configuration Release -destination 'generic/platform=macOS' \
+      -derivedDataPath Build/DerivedData ARCHS="$architecture" \
+      CONFIGURATION_BUILD_DIR="$PWD/Build/$architecture" build
+    ditto -c -k --sequesterRsrc --keepParent "Build/$architecture/EvaBar.app" \
+      "Build/Release/EvaBar-$version-$architecture.zip"
+  done
+)
 ```
 
 ## License

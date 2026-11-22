@@ -41,7 +41,7 @@ jobs:
           const expected = `https://github.com/MichaelChene/EvaBar/releases/download/${tag}/`;
           const html = readFileSync('dist/index.html', 'utf8');
           if (!html.includes(`href="${expected}`)) {
-            throw new Error(`The site did not select an Apple silicon download from ${process.env.RELEASE_TAG}.`);
+            throw new Error(`The site did not select a macOS download from ${process.env.RELEASE_TAG}.`);
           }
           NODE
       - name: Package Vercel build output
