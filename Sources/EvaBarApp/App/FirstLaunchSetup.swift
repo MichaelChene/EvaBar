@@ -7,7 +7,10 @@ enum FirstLaunchSetup {
     static func shouldShow(defaults: UserDefaults, bundleIdentifier: String) -> Bool {
         guard !defaults.bool(forKey: completionKey) else { return false }
         let preferences = defaults.persistentDomain(forName: bundleIdentifier) ?? [:]
-        let existingSettings = ["menuBarIcon", "shortcut", "shortcutDisabled", "decimalPlaces", "decimalSeparator", "groupSeparator"]
+        let existingSettings = [
+            "menuBarIcon", CalculatorPreferences.hideMenuBarIconKey, "shortcut", "shortcutDisabled",
+            "decimalPlaces", "decimalSeparator", "groupSeparator"
+        ]
         return !existingSettings.contains { preferences[$0] != nil }
             && !preferences.keys.contains { $0.hasPrefix("NSStatusItem ") }
     }

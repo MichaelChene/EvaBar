@@ -24,11 +24,10 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
         let showSetup = FirstLaunchSetup.shouldShow(defaults: defaults, bundleIdentifier: bundleIdentifier)
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.autosaveName = "EvaBar"
-        item.isVisible = true
         guard let button = item.button else { return }
         button.setAccessibilityLabel("EvaBar")
 
-        let calculator = CalculatorController(anchor: button, shortcuts: shortcuts)
+        let calculator = CalculatorController(statusItem: item, shortcuts: shortcuts)
         button.toolTip = "EvaBar"
         button.target = calculator
         button.action = #selector(CalculatorController.togglePanel)

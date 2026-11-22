@@ -57,7 +57,7 @@ final class SeparatorPicker: NSPopUpButton {
 }
 
 @MainActor
-final class StartupSwitch: NSButton {
+final class PreferenceSwitch: NSButton {
     private let trackLayer = CALayer()
     private let thumbLayer = CALayer()
     private var showsOn = false

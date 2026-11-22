@@ -4,6 +4,8 @@ import ServiceManagement
 
 @MainActor
 final class CalculatorPreferences: NSObject, NSMenuDelegate {
+    static let hideMenuBarIconKey = "hideMenuBarIcon"
+
     private static let icons: [(asset: String, symbol: String, title: String)] = [
         ("brand-mark", "function", "EvaBar (f)"), ("plus-minus", "plus.forwardslash.minus", "Plus or minus"),
         ("percent", "percent", "Percent"), ("number-sign", "number", "Number sign"),
@@ -13,10 +15,11 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     ]
 
     private let defaults = UserDefaults.standard
-    private weak var statusButton: NSStatusBarButton?
-    private let startup = StartupSwitch()
+    private let statusItem: NSStatusItem
+    private let startup = PreferenceSwitch()
     private let startupMessage = NSButton(title: "", target: nil, action: nil)
     private var iconTiles: [PreferenceTile] = []
+    private let hideIcon = PreferenceSwitch()
     private let precisionLabel = NSTextField(labelWithString: "")
     private let decrement = PreferenceTile()
     private let increment = PreferenceTile()
@@ -35,8 +38,8 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     var onRestore: (() -> Void)?
     var onLanguageChange: (() -> Void)?
 
-    init(statusButton: NSStatusBarButton) {
-        self.statusButton = statusButton
+    init(statusItem: NSStatusItem) {
+        self.statusItem = statusItem
         let storedPlaces = defaults.object(forKey: "decimalPlaces") as? Int
         let places = storedPlaces.flatMap { ResultFormatting.decimalPlaces.contains($0) ? $0 : nil }
         let storedDecimal = defaults.string(forKey: "decimalSeparator").flatMap(NumberSeparator.init(rawValue:))
@@ -50,17 +53,11 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         )
         super.init()
         updateStatusIcon(at: selectedIconIndex)
+        statusItem.isVisible = !defaults.bool(forKey: Self.hideMenuBarIconKey)
     }
 
     lazy var grid: DrawerGrid = {
-        startup.setButtonType(.switch)
-        startup.title = ""
-        startup.isBordered = false
-        startup.target = self
-        startup.action = #selector(changeStartup)
-        startup.setAccessibilityLabel(L10n.text("Launch at login"))
-        startup.widthAnchor.constraint(equalToConstant: 38).isActive = true
-        startup.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        configureSwitch(startup, label: L10n.text("Launch at login"), action: #selector(changeStartup))
         startupMessage.target = self
         startupMessage.action = #selector(openLoginItems)
         startupMessage.isBordered = false
@@ -111,6 +108,15 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
             button.selected = index == selectedIconIndex
             return button
         }
+        let hideIconTitle = L10n.text("Hide menu bar icon")
+        configureSwitch(hideIcon, label: hideIconTitle, action: #selector(changeIconVisibility))
+        hideIcon.updateState(statusItem.isVisible ? .off : .on, animated: false)
+        let hideIconLabel = NSTextField(labelWithString: hideIconTitle)
+        hideIconLabel.font = .systemFont(ofSize: 13)
+        let iconSection = section(L10n.text("Menu bar icon"), controls: [
+            DrawerGrid.row(iconTiles, spacing: 6),
+            DrawerGrid.row([hideIcon, hideIconLabel], spacing: 8)
+        ])
         let shortcutRow = ControlBand(views: [record, clear])
         shortcutRow.orientation = .horizontal
         shortcutRow.alignment = .centerY
@@ -129,7 +135,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
             section(L10n.text("Launch at login"), controls: [switchContainer(), startupMessage]),
             section(L10n.text("Language"), controls: [language]),
             shortcut,
-            section(L10n.text("Menu bar icon"), controls: [DrawerGrid.row(iconTiles, spacing: 6)]),
+            iconSection,
             section(L10n.text("Decimal places"), controls: [places]),
             separators
         ]
@@ -169,11 +175,22 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     }
 
     private func updateStatusIcon(at index: Int) {
-        guard let statusButton else { return }
+        guard let statusButton = statusItem.button else { return }
         let image = imageForIcon(at: index) ?? imageForIcon(at: 0)
         statusButton.image = image
         statusButton.imagePosition = image == nil ? .noImage : .imageOnly
         statusButton.title = image == nil ? "f" : ""
+    }
+
+    private func configureSwitch(_ control: PreferenceSwitch, label: String, action: Selector) {
+        control.setButtonType(.switch)
+        control.title = ""
+        control.isBordered = false
+        control.target = self
+        control.action = action
+        control.setAccessibilityLabel(label)
+        control.widthAnchor.constraint(equalToConstant: 38).isActive = true
+        control.heightAnchor.constraint(equalToConstant: 22).isActive = true
     }
 
     private func configureTile(_ button: PreferenceTile, symbol: String, label: String, action: Selector, filled: Bool = true) {
@@ -258,6 +275,13 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         defaults.set(Self.icons[index].symbol, forKey: "menuBarIcon")
         for tile in iconTiles { tile.selected = tile.tag == index }
         updateStatusIcon(at: index)
+    }
+
+    @objc private func changeIconVisibility() {
+        let hidden = hideIcon.state == .on
+        defaults.set(hidden, forKey: Self.hideMenuBarIconKey)
+        statusItem.isVisible = !hidden
+        hideIcon.updateState(hidden ? .on : .off, animated: true)
     }
 
     @objc private func changeStartup() {

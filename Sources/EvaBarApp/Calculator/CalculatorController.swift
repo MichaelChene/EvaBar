@@ -6,7 +6,8 @@ import Carbon.HIToolbox
 final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegate {
     private enum Drawer { case functions, preferences }
 
-    private weak var anchor: NSStatusBarButton?
+    private let statusItem: NSStatusItem
+    private var anchor: NSStatusBarButton? { statusItem.isVisible ? statusItem.button : nil }
     private let shortcuts: GlobalShortcut
     private var preferences: CalculatorPreferences
     private let defaults = UserDefaults.standard
@@ -27,10 +28,10 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private var isRecordingShortcut = false
     var onLanguageChange: (() -> Void)?
 
-    init(anchor: NSStatusBarButton, shortcuts: GlobalShortcut) {
-        self.anchor = anchor
+    init(statusItem: NSStatusItem, shortcuts: GlobalShortcut) {
+        self.statusItem = statusItem
         self.shortcuts = shortcuts
-        preferences = CalculatorPreferences(statusButton: anchor)
+        preferences = CalculatorPreferences(statusItem: statusItem)
         super.init()
 
         if !defaults.bool(forKey: "shortcutDisabled") {
@@ -132,10 +133,8 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         configurePanelControls()
         reference = nil
         aboutWindow?.updateLocalization()
-        if let anchor {
-            preferences = CalculatorPreferences(statusButton: anchor)
-            connectPreferences()
-        }
+        preferences = CalculatorPreferences(statusItem: statusItem)
+        connectPreferences()
         onLanguageChange?()
         isRecordingShortcut = false
         refreshDrawers()
