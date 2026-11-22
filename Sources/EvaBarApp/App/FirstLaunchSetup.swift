@@ -19,18 +19,18 @@ enum FirstLaunchSetup {
         let alert = NSAlert()
         alert.alertStyle = .informational
         alert.icon = AppArtwork.applicationIcon
-        alert.messageText = L10n.text("Welcome to EvaBar")
+        alert.messageText = L10n.text("Welcome to Eva|Bar")
         if let shortcut {
             alert.informativeText = L10n.format(
-                "Open EvaBar from the menu bar or press %@. Change the shortcut and launch at login in Preferences.",
+                "Open Eva|Bar from the menu bar or press %@. Change the shortcut and launch at login in Preferences.",
                 shortcut.displayName
             )
         } else {
             alert.informativeText = L10n.text(
-                "Open EvaBar from the menu bar. You can set a shortcut and enable launch at login in Preferences."
+                "Open Eva|Bar from the menu bar. You can set a shortcut and enable launch at login in Preferences."
             )
         }
-        alert.addButton(withTitle: L10n.text("Start Using EvaBar"))
+        alert.addButton(withTitle: L10n.text("Start Using Eva|Bar"))
         alert.addButton(withTitle: L10n.text("Open Preferences…"))
         defaults.set(true, forKey: completionKey)
 

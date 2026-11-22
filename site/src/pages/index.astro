@@ -21,20 +21,20 @@ const downloadOptions = arm64 && arm64.url === intel?.url ? [
 ];
 const downloadUrls = downloadOptions.flatMap(({ download }) => download ? [download.url] : []);
 const chipSupport = [arm64 ? "Apple silicon" : null, intel ? "Intel" : null].filter(Boolean).join(" and ") || null;
-const title = "EvaBar — CalcBar Alternative for Mac";
-const description = "EvaBar (formerly CalcBar2) is a free, open-source CalcBar alternative for Mac, with a floating calculator, global shortcut and live results.";
+const title = "Eva|Bar — CalcBar Alternative for Mac";
+const description = "Eva|Bar (formerly CalcBar2) is a free, open-source CalcBar alternative for Mac, with a floating calculator, global shortcut and live results.";
 const canonical = new URL("/", Astro.site).href;
 const screenshot = {
   src: "/images/evabar-preferences.webp",
   width: 3760,
   height: 870,
-  alt: "EvaBar in Simplified Chinese, with the calculator bar, Preferences and function reference open together",
+  alt: "Eva|Bar in Simplified Chinese, with the calculator bar, Preferences and function reference open together",
 };
 const shareImage = new URL(screenshot.src, canonical).href;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "EvaBar",
+  name: "Eva|Bar",
   alternateName: "CalcBar2",
   url: canonical,
   description,
@@ -49,7 +49,7 @@ const structuredData = {
 };
 const features = [
   { icon: Keyboard, heading: "Always a shortcut away", description: "Open the floating bar from any app, type your expression, and press Return to copy the result." },
-  { icon: Pin, heading: "Keep it in view", description: "Click the lock to keep EvaBar above your workspace. Unlock it to dismiss the bar by clicking anywhere else." },
+  { icon: Pin, heading: "Keep it in view", description: "Click the lock to keep Eva|Bar above your workspace. Unlock it to dismiss the bar by clicking anywhere else." },
   { icon: SlidersHorizontal, heading: "Numbers on your terms", description: "Set the decimal precision and choose your decimal and thousands separators in Preferences." },
 ];
 ---
@@ -62,7 +62,7 @@ const features = [
     <meta name="theme-color" content="#101016" />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="EvaBar" />
+    <meta property="og:site_name" content="Eva|Bar" />
     <meta property="og:url" content={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -80,9 +80,9 @@ const features = [
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <div class="shell header-inner">
-        <a class="brand" href="#top" aria-label="EvaBar home">
+        <a class="brand" href="#top" aria-label="Eva|Bar home">
           <img src="/images/evabar-icon.png" alt="" width="32" height="32" />
-          <span>EvaBar</span>
+          <span>Eva|Bar</span>
         </a>
         <nav class="primary-nav" aria-label="Main navigation">
           <a href="#preview">Preview</a>
@@ -100,7 +100,7 @@ const features = [
           <img class="hero-icon" src="/images/evabar-icon.png" alt="" width="85" height="85" />
           <p class="eyebrow">The menu bar calculator for Mac</p>
           <h1 id="hero-title">Do the math.<br /><span>Stay in flow.</span></h1>
-          <p class="hero-description">EvaBar, formerly CalcBar2, is a calculator that floats above your work. Type an expression and copy the result without switching apps.</p>
+          <p class="hero-description">Eva|Bar, formerly CalcBar2, is a calculator that floats above your work. Type an expression and copy the result without switching apps.</p>
           <div class="hero-actions">
             {hasDownloads ? (
               <details class="download-menu" id="mac-downloads">
@@ -161,8 +161,8 @@ const features = [
           </div>
         </div>
         <ol class="guide-steps">
-          <li><span>1</span><div><h3>Install EvaBar</h3><p>Unzip the download and move EvaBar.app to your Applications folder.</p></div></li>
-          <li><span>2</span><div><h3>Open the bar</h3><p>Click EvaBar in the menu bar or press Control–Shift–Space.</p></div></li>
+          <li><span>1</span><div><h3>Install Eva|Bar</h3><p>Unzip the download and move the app to your Applications folder.</p></div></li>
+          <li><span>2</span><div><h3>Open the bar</h3><p>Click Eva|Bar in the menu bar or press Control–Shift–Space.</p></div></li>
           <li><span>3</span><div><h3>Type and copy</h3><p>Enter a calculation and press Return to copy the result.</p></div></li>
         </ol>
       </section>
@@ -174,7 +174,7 @@ const features = [
     </main>
     <footer class="site-footer">
       <div class="shell footer-inner">
-        <a class="brand" href="#top" aria-label="EvaBar home"><img src="/images/evabar-icon.png" alt="" width="30" height="30" /> EvaBar</a>
+        <a class="brand" href="#top" aria-label="Eva|Bar home"><img src="/images/evabar-icon.png" alt="" width="30" height="30" /> Eva|Bar</a>
         <nav aria-label="Footer navigation">
           <a href={releasesUrl}>Releases</a>
           <a href={`${repositoryUrl}/issues`}>Issues</a>

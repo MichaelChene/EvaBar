@@ -7,7 +7,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     static let hideMenuBarIconKey = "hideMenuBarIcon"
 
     private static let icons: [(asset: String, symbol: String, title: String)] = [
-        ("brand-mark", "function", "EvaBar (f)"), ("plus-minus", "plus.forwardslash.minus", "Plus or minus"),
+        ("brand-mark", "function", "Eva|Bar (f)"), ("plus-minus", "plus.forwardslash.minus", "Plus or minus"),
         ("percent", "percent", "Percent"), ("number-sign", "number", "Number sign"),
         ("divide", "divide", "Division"), ("equal", "equal", "Equals"),
         ("not.equal", "notequal", "Not equal"), ("pi", "pi", "Pi constant"),

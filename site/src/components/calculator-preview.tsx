@@ -24,10 +24,10 @@ export function CalculatorPreview() {
   }
 
   return (
-    <figure className="calculator-preview" aria-label="EvaBar interactive preview">
+    <figure className="calculator-preview" aria-label="Eva|Bar interactive preview">
       <div className="desktop-preview desktop-wallpaper">
         <div className="desktop-menubar" aria-hidden="true">
-          <span className="desktop-app">EvaBar</span>
+          <span className="desktop-app">Eva|Bar</span>
           <span className="desktop-status"><img src="/images/evabar-mark.png" alt="" width="14" height="14" /><Wifi size={13} /><BatteryFull size={16} /><span>9:41 AM</span></span>
         </div>
         <div className="demo-calculator">

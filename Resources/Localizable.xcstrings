@@ -131,67 +131,67 @@
         }
       }
     },
-    "About EvaBar": {
+    "About Eva|Bar": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "About EvaBar"
+            "value": "About Eva|Bar"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "关于 EvaBar"
+            "value": "关于 Eva|Bar"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "關於 EvaBar"
+            "value": "關於 Eva|Bar"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar について"
+            "value": "Eva|Bar について"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar 정보"
+            "value": "Eva|Bar 정보"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Über EvaBar"
+            "value": "Über Eva|Bar"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "À propos d’EvaBar"
+            "value": "À propos d’Eva|Bar"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Acerca de EvaBar"
+            "value": "Acerca de Eva|Bar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sobre o EvaBar"
+            "value": "Sobre o Eva|Bar"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Informazioni su EvaBar"
+            "value": "Informazioni su Eva|Bar"
           }
         }
       }
@@ -1561,67 +1561,67 @@
         }
       }
     },
-    "EvaBar (f)": {
+    "Eva|Bar (f)": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar (f)"
+            "value": "Eva|Bar (f)"
           }
         }
       }
@@ -3056,132 +3056,132 @@
         }
       }
     },
-    "Open EvaBar from the menu bar or press %@. Change the shortcut and launch at login in Preferences.": {
+    "Open Eva|Bar from the menu bar or press %@. Change the shortcut and launch at login in Preferences.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open EvaBar from the menu bar or press %@. Change the shortcut and launch at login in Preferences."
+            "value": "Open Eva|Bar from the menu bar or press %@. Change the shortcut and launch at login in Preferences."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "从菜单栏打开 EvaBar，或按 %@。可在偏好设置中更改快捷键和登录启动选项。"
+            "value": "从菜单栏打开 Eva|Bar，或按 %@。可在偏好设置中更改快捷键和登录启动选项。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "從選單列開啟 EvaBar，或按下 %@。可在偏好設定中變更快速鍵和登入啟動選項。"
+            "value": "從選單列開啟 Eva|Bar，或按下 %@。可在偏好設定中變更快速鍵和登入啟動選項。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "メニューバーから EvaBar を開くか、%@ を押してください。ショートカットやログイン時の起動は設定で変更できます。"
+            "value": "メニューバーから Eva|Bar を開くか、%@ を押してください。ショートカットやログイン時の起動は設定で変更できます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "메뉴 막대에서 EvaBar를 열거나 %@ 키를 누르세요. 환경설정에서 단축키와 로그인 시 실행을 변경할 수 있습니다."
+            "value": "메뉴 막대에서 Eva|Bar를 열거나 %@ 키를 누르세요. 환경설정에서 단축키와 로그인 시 실행을 변경할 수 있습니다."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Öffne EvaBar über die Menüleiste oder drücke %@. Kurzbefehl und Start bei Anmeldung lassen sich in den Einstellungen ändern."
+            "value": "Öffne Eva|Bar über die Menüleiste oder drücke %@. Kurzbefehl und Start bei Anmeldung lassen sich in den Einstellungen ändern."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ouvrez EvaBar depuis la barre des menus ou appuyez sur %@. Le raccourci et l’ouverture à la connexion se règlent dans les préférences."
+            "value": "Ouvrez Eva|Bar depuis la barre des menus ou appuyez sur %@. Le raccourci et l’ouverture à la connexion se règlent dans les préférences."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abre EvaBar en la barra de menús o pulsa %@. Cambia el atajo y el inicio de sesión en Preferencias."
+            "value": "Abre Eva|Bar en la barra de menús o pulsa %@. Cambia el atajo y el inicio de sesión en Preferencias."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abra o EvaBar pela barra de menus ou pressione %@. Altere o atalho e a abertura ao iniciar sessão nas Preferências."
+            "value": "Abra o Eva|Bar pela barra de menus ou pressione %@. Altere o atalho e a abertura ao iniciar sessão nas Preferências."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apri EvaBar dalla barra dei menu o premi %@. Modifica l’abbreviazione e l’avvio al login nelle preferenze."
+            "value": "Apri Eva|Bar dalla barra dei menu o premi %@. Modifica l’abbreviazione e l’avvio al login nelle preferenze."
           }
         }
       }
     },
-    "Open EvaBar from the menu bar. You can set a shortcut and enable launch at login in Preferences.": {
+    "Open Eva|Bar from the menu bar. You can set a shortcut and enable launch at login in Preferences.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open EvaBar from the menu bar. You can set a shortcut and enable launch at login in Preferences."
+            "value": "Open Eva|Bar from the menu bar. You can set a shortcut and enable launch at login in Preferences."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "从菜单栏打开 EvaBar。可在偏好设置中设置快捷键并启用登录启动。"
+            "value": "从菜单栏打开 Eva|Bar。可在偏好设置中设置快捷键并启用登录启动。"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "從選單列開啟 EvaBar。可在偏好設定中設定快速鍵並啟用登入時啟動。"
+            "value": "從選單列開啟 Eva|Bar。可在偏好設定中設定快速鍵並啟用登入時啟動。"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "メニューバーから EvaBar を開けます。設定でショートカットを登録し、ログイン時の起動を有効にできます。"
+            "value": "メニューバーから Eva|Bar を開けます。設定でショートカットを登録し、ログイン時の起動を有効にできます。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "메뉴 막대에서 EvaBar를 여세요. 환경설정에서 단축키를 지정하고 로그인 시 실행을 켤 수 있습니다."
+            "value": "메뉴 막대에서 Eva|Bar를 여세요. 환경설정에서 단축키를 지정하고 로그인 시 실행을 켤 수 있습니다."
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Öffne EvaBar über die Menüleiste. In den Einstellungen kannst du einen Kurzbefehl festlegen und den Start bei Anmeldung aktivieren."
+            "value": "Öffne Eva|Bar über die Menüleiste. In den Einstellungen kannst du einen Kurzbefehl festlegen und den Start bei Anmeldung aktivieren."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ouvrez EvaBar depuis la barre des menus. Vous pouvez définir un raccourci et activer l’ouverture à la connexion dans les préférences."
+            "value": "Ouvrez Eva|Bar depuis la barre des menus. Vous pouvez définir un raccourci et activer l’ouverture à la connexion dans les préférences."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abre EvaBar en la barra de menús. En Preferencias puedes configurar un atajo y abrir la app al iniciar sesión."
+            "value": "Abre Eva|Bar en la barra de menús. En Preferencias puedes configurar un atajo y abrir la app al iniciar sesión."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abra o EvaBar pela barra de menus. Nas Preferências, você pode definir um atalho e ativar a abertura ao iniciar sessão."
+            "value": "Abra o Eva|Bar pela barra de menus. Nas Preferências, você pode definir um atalho e ativar a abertura ao iniciar sessão."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Apri EvaBar dalla barra dei menu. Nelle preferenze puoi impostare un’abbreviazione e attivare l’avvio al login."
+            "value": "Apri Eva|Bar dalla barra dei menu. Nelle preferenze puoi impostare un’abbreviazione e attivare l’avvio al login."
           }
         }
       }
@@ -4031,67 +4031,67 @@
         }
       }
     },
-    "Quit EvaBar": {
+    "Quit Eva|Bar": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quit EvaBar"
+            "value": "Quit Eva|Bar"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "退出 EvaBar"
+            "value": "退出 Eva|Bar"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "結束 EvaBar"
+            "value": "結束 Eva|Bar"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar を終了"
+            "value": "Eva|Bar を終了"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar 종료"
+            "value": "Eva|Bar 종료"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar beenden"
+            "value": "Eva|Bar beenden"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quitter EvaBar"
+            "value": "Quitter Eva|Bar"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salir de EvaBar"
+            "value": "Salir de Eva|Bar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Encerrar EvaBar"
+            "value": "Encerrar Eva|Bar"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Esci da EvaBar"
+            "value": "Esci da Eva|Bar"
           }
         }
       }
@@ -4876,67 +4876,67 @@
         }
       }
     },
-    "Start Using EvaBar": {
+    "Start Using Eva|Bar": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Start Using EvaBar"
+            "value": "Start Using Eva|Bar"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "开始使用 EvaBar"
+            "value": "开始使用 Eva|Bar"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "開始使用 EvaBar"
+            "value": "開始使用 Eva|Bar"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar を使い始める"
+            "value": "Eva|Bar を使い始める"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar 사용 시작"
+            "value": "Eva|Bar 사용 시작"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar verwenden"
+            "value": "Eva|Bar verwenden"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Utiliser EvaBar"
+            "value": "Utiliser Eva|Bar"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Empezar a usar EvaBar"
+            "value": "Empezar a usar Eva|Bar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Começar a usar o EvaBar"
+            "value": "Começar a usar o Eva|Bar"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inizia a usare EvaBar"
+            "value": "Inizia a usare Eva|Bar"
           }
         }
       }
@@ -5981,67 +5981,67 @@
         }
       }
     },
-    "Welcome to EvaBar": {
+    "Welcome to Eva|Bar": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Welcome to EvaBar"
+            "value": "Welcome to Eva|Bar"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "欢迎使用 EvaBar"
+            "value": "欢迎使用 Eva|Bar"
           }
         },
         "zh-Hant": {
           "stringUnit": {
             "state": "translated",
-            "value": "歡迎使用 EvaBar"
+            "value": "歡迎使用 Eva|Bar"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar へようこそ"
+            "value": "Eva|Bar へようこそ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "EvaBar에 오신 것을 환영합니다"
+            "value": "Eva|Bar에 오신 것을 환영합니다"
           }
         },
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Willkommen bei EvaBar"
+            "value": "Willkommen bei Eva|Bar"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bienvenue dans EvaBar"
+            "value": "Bienvenue dans Eva|Bar"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Te damos la bienvenida a EvaBar"
+            "value": "Te damos la bienvenida a Eva|Bar"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boas-vindas ao EvaBar"
+            "value": "Boas-vindas ao Eva|Bar"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ti diamo il benvenuto in EvaBar"
+            "value": "Ti diamo il benvenuto in Eva|Bar"
           }
         }
       }

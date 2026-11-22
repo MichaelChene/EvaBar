@@ -4,9 +4,9 @@ export function FAQ({ chipSupport }: { chipSupport: string | null }) {
   return (
     <Accordion type="single" collapsible className="faq-list">
       <AccordionItem value="compatibility">
-        <AccordionTrigger>Which Macs can run EvaBar?</AccordionTrigger>
+        <AccordionTrigger>Which Macs can run Eva|Bar?</AccordionTrigger>
         <AccordionContent>
-          EvaBar requires macOS 13 or later.{" "}
+          Eva|Bar requires macOS 13 or later.{" "}
           {chipSupport ? `Downloads are available for ${chipSupport} Macs.` : "See the release notes for supported Mac models."}
         </AccordionContent>
       </AccordionItem>
@@ -20,7 +20,7 @@ export function FAQ({ chipSupport }: { chipSupport: string | null }) {
       <AccordionItem value="languages">
         <AccordionTrigger>Which languages are available?</AccordionTrigger>
         <AccordionContent>
-          EvaBar follows your system language by default. Choose English, Simplified Chinese, Traditional Chinese,
+          Eva|Bar follows your system language by default. Choose English, Simplified Chinese, Traditional Chinese,
           Japanese, Korean, German, French, Spanish, Brazilian Portuguese, or Italian in Preferences.
         </AccordionContent>
       </AccordionItem>

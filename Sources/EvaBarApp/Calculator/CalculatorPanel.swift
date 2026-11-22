@@ -15,7 +15,7 @@ final class CalculatorPanel: NSPanel {
             backing: .buffered,
             defer: false
         )
-        title = "EvaBar"
+        title = "Eva|Bar"
         isFloatingPanel = true
         level = .floating
         hidesOnDeactivate = false

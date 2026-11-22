@@ -1,6 +1,6 @@
-# EvaBar website
+# Eva|Bar website
 
-The EvaBar product site is a static Astro project with React islands, Tailwind CSS, and shadcn/ui components.
+The Eva|Bar product site is a static Astro project with React islands, Tailwind CSS, and shadcn/ui components.
 
 ## Develop
 
@@ -16,7 +16,7 @@ Run `npm run check` to type-check the site and `npm run build` to generate it in
 
 For each processor type, the download menu selects the newest stable GitHub release with a compatible package and falls back to a prerelease when needed. Within a release, a processor-specific package takes priority over a universal one. The menu shows the version of each package and lists a shared universal package once. Rebuild the static site after publishing a release to update the download links. If GitHub is unavailable or no matching asset exists, the download button opens the releases page.
 
-The desktop preview uses the default wallpaper from macOS 27 and EvaBar’s existing app artwork.
+The desktop preview uses the default wallpaper from macOS 27 and Eva|Bar’s app artwork.
 
 ## Production deployment
 

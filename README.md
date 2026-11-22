@@ -1,14 +1,14 @@
-<p align="center"><img src="docs/images/evabar-icon.png" width="96" alt="EvaBar icon"></p>
-<h1 align="center">EvaBar</h1>
+<p align="center"><img src="docs/images/evabar-icon.png" width="96" alt="Eva|Bar icon"></p>
+<h1 align="center">Eva|Bar</h1>
 <p align="center">A floating, keyboard-first calculator for the macOS menu bar.</p>
 <p align="center"><strong>macOS 13+ · Apple silicon and Intel</strong></p>
 <p align="center"><a href="https://github.com/MichaelChene/EvaBar/releases">Releases</a> · <a href="#quick-start">Quick start</a> · <a href="#build">Build</a></p>
 
-![EvaBar showing a live calculation in its floating bar](docs/images/evabar-bar.png)
+![Eva|Bar showing a live calculation in its floating bar](docs/images/evabar-bar.png)
 
 ## Quick start
 
-1. Choose the Apple silicon (`arm64`) or Intel (`x86_64`) download for your Mac from [Releases](https://github.com/MichaelChene/EvaBar/releases). A universal download works on both. Unzip the package and move `EvaBar.app` to Applications.
+1. Choose the Apple silicon (`arm64`) or Intel (`x86_64`) download for your Mac from [Releases](https://github.com/MichaelChene/EvaBar/releases). A universal download works on both. Unzip the package and move the app to Applications.
 2. Click the menu bar icon or press <kbd>Control</kbd>–<kbd>Shift</kbd>–<kbd>Space</kbd>.
 3. Type an expression and press <kbd>Return</kbd> to copy the result.
 
@@ -25,7 +25,7 @@ Click outside the bar to dismiss it, or use the lock button to keep it on screen
 
 Use a period for decimals and commas between function arguments. Trigonometric functions use radians. Preferences control the precision and separators of displayed and copied results.
 
-EvaBar follows the system language by default and supports English, 简体中文, 繁體中文, 日本語, 한국어, Deutsch, Français, Español, Português (Brasil), and Italiano.
+Eva|Bar follows the system language by default and supports English, 简体中文, 繁體中文, 日本語, 한국어, Deutsch, Français, Español, Português (Brasil), and Italiano.
 
 ## Build
 

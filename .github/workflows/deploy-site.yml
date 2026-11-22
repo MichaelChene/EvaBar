@@ -1,4 +1,4 @@
-name: Deploy EvaBar website
+name: Deploy Eva|Bar website
 
 on:
   release:

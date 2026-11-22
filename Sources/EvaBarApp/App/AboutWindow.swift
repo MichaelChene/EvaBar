@@ -23,7 +23,7 @@ final class AboutWindow: NSWindow, NSWindowDelegate {
         contentView?.addSubview(icon)
 
         let labels: [(NSTextField, CGFloat, CGFloat, CGFloat, NSFont.Weight)] = [
-            (NSTextField(labelWithString: "EvaBar"), 79, 24, 18, .semibold),
+            (NSTextField(labelWithString: "Eva|Bar"), 79, 24, 18, .semibold),
             (versionLabel, 53, 24, 12, .semibold),
             (authorLabel, 32, 24, 12, .medium),
             (copyrightLabel, 4, 29, 11, .medium)
@@ -42,7 +42,7 @@ final class AboutWindow: NSWindow, NSWindowDelegate {
     required init?(coder: NSCoder) { nil }
 
     func updateLocalization() {
-        title = L10n.text("About EvaBar")
+        title = L10n.text("About Eva|Bar")
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
         versionLabel.stringValue = L10n.format("Version %@", version)
         authorLabel.stringValue = L10n.text("Created by Michael Chene")

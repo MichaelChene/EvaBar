@@ -25,10 +25,10 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.autosaveName = "EvaBar"
         guard let button = item.button else { return }
-        button.setAccessibilityLabel("EvaBar")
+        button.setAccessibilityLabel("Eva|Bar")
 
         let calculator = CalculatorController(statusItem: item, shortcuts: shortcuts)
-        button.toolTip = "EvaBar"
+        button.toolTip = "Eva|Bar"
         button.target = calculator
         button.action = #selector(CalculatorController.togglePanel)
         shortcuts.onPress = { [weak calculator] in
@@ -63,13 +63,13 @@ private final class AppDelegate: NSObject, NSApplicationDelegate {
     private func installMainMenu(for calculator: CalculatorController) {
         let main = NSMenu()
         let appItem = NSMenuItem()
-        let appMenu = NSMenu(title: "EvaBar")
+        let appMenu = NSMenu(title: "Eva|Bar")
         let preferences = appMenu.addItem(
             withTitle: L10n.text("Preferences…"), action: #selector(CalculatorController.openPreferences), keyEquivalent: ","
         )
         preferences.target = calculator
         appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: L10n.text("Quit EvaBar"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenu.addItem(withTitle: L10n.text("Quit Eva|Bar"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         appItem.submenu = appMenu
         main.addItem(appItem)
 
