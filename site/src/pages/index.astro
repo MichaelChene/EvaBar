@@ -59,7 +59,7 @@ const features = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#101016" />
+    <meta name="theme-color" content="#120f12" />
     <link rel="canonical" href={canonical} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Eva|Bar" />
@@ -82,7 +82,7 @@ const features = [
       <div class="shell header-inner">
         <a class="brand" href="#top" aria-label="Eva|Bar home">
           <img src="/images/evabar-icon.png" alt="" width="32" height="32" />
-          <span>Eva|Bar</span>
+          <span>Eva<span class="brand-divider">|</span>Bar</span>
         </a>
         <nav class="primary-nav" aria-label="Main navigation">
           <a href="#preview">Preview</a>
@@ -174,7 +174,10 @@ const features = [
     </main>
     <footer class="site-footer">
       <div class="shell footer-inner">
-        <a class="brand" href="#top" aria-label="Eva|Bar home"><img src="/images/evabar-icon.png" alt="" width="30" height="30" /> Eva|Bar</a>
+        <a class="brand" href="#top" aria-label="Eva|Bar home">
+          <img src="/images/evabar-icon.png" alt="" width="30" height="30" />
+          <span>Eva<span class="brand-divider">|</span>Bar</span>
+        </a>
         <nav aria-label="Footer navigation">
           <a href={releasesUrl}>Releases</a>
           <a href={`${repositoryUrl}/issues`}>Issues</a>
