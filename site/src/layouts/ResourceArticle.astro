@@ -1,0 +1,35 @@
+---
+import { ArrowLeft, ArrowRight, LaptopMinimal } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { resourcePages, type ResourcePage } from "@/lib/resources";
+import SiteLayout from "./SiteLayout.astro";
+
+interface Props {
+  page: ResourcePage;
+}
+
+const { page } = Astro.props;
+---
+<SiteLayout title={page.title} description={page.description} path={page.path}>
+  <article class="shell resource-article" aria-labelledby="article-title">
+    <header class="resource-heading">
+      <a class="resource-back" href="/#resources"><ArrowLeft size={16} aria-hidden="true" /> Resources</a>
+      <h1 id="article-title">{page.heading}</h1>
+      <p>{page.description}</p>
+    </header>
+    <div class="resource-body">
+      <slot />
+    </div>
+    <footer class="resource-footer">
+      <a class={buttonVariants({ size: "lg" })} href="/#download"><LaptopMinimal aria-hidden="true" /> Download Eva|Bar</a>
+      <nav aria-labelledby="related-title">
+        <h2 id="related-title">Related pages</h2>
+        <ul>
+          {resourcePages.filter((entry) => entry.path !== page.path).map((entry) => (
+            <li><a href={entry.path}>{entry.heading}<ArrowRight size={16} aria-hidden="true" /></a></li>
+          ))}
+        </ul>
+      </nav>
+    </footer>
+  </article>
+</SiteLayout>

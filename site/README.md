@@ -20,7 +20,7 @@ The desktop preview uses the default wallpaper from macOS 27 and Eva|Bar’s app
 
 ## Production deployment
 
-The [GitHub Actions workflow](../.github/workflows/deploy-site.yml) publishes the site to [evabar.vercel.app](https://evabar.vercel.app/) when a stable GitHub Release is published.
+The [GitHub Actions workflow](../.github/workflows/deploy-site.yml) publishes the site to [evabar.michaeljier.cn](https://evabar.michaeljier.cn/) when a stable GitHub Release is published. Set the production URL in `astro.config.mjs` to update the canonical URL, `robots.txt`, and sitemap together.
 
 In the GitHub repository’s Actions settings, add `VERCEL_TOKEN` as a secret and `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` as variables for the `michaeljiers-projects/evabar` Vercel project.
 

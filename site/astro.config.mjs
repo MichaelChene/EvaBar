@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://evabar.vercel.app",
+  site: "https://evabar.michaeljier.cn",
   integrations: [react()],
   vite: { plugins: [tailwindcss()] },
 });

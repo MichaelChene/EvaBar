@@ -1,0 +1,36 @@
+---
+import screenshot from "../../../../docs/images/evabar-bar.png";
+import ResourceArticle from "@/layouts/ResourceArticle.astro";
+import { releasesUrl, repositoryUrl } from "@/lib/release";
+import { resources } from "@/lib/resources";
+---
+<ResourceArticle page={resources.floating}>
+  <h2>Open the calculator with a keyboard shortcut</h2>
+  <ol>
+    <li><a href="/#download">Download Eva|Bar</a> for your Mac, unzip it, and move the app to Applications. It requires macOS 13 or later.</li>
+    <li>Open Eva|Bar from Applications. If macOS blocks the beta, <a href="#open-beta">follow the first-launch steps below</a>. While working in another app, use the default shortcut <kbd>Control–Shift–Space</kbd> or click the Eva|Bar menu bar icon when it’s visible.</li>
+    <li>Type <code>(480 + 96) / 3</code>. The result updates as you type. Press <kbd>Return</kbd> to copy <strong>192</strong> and paste it where you need it.</li>
+  </ol>
+
+  <figure class="resource-figure">
+    <img src={screenshot.src} width={screenshot.width} height={screenshot.height} alt="Eva|Bar’s floating calculator with its lock, function reference, expression field, and result" loading="lazy" />
+  </figure>
+
+  <section aria-labelledby="open-beta">
+    <h2 id="open-beta">Open the Eva|Bar beta for the first time</h2>
+    <p>The beta downloads from <a href={releasesUrl}>Eva|Bar’s GitHub Releases</a> are ad hoc signed. They lack an Apple Developer ID signature and notarization, so macOS may block the first launch.</p>
+    <ol>
+      <li>Open Eva|Bar from Applications once and dismiss the alert.</li>
+      <li>Open <strong>System Settings → Privacy &amp; Security</strong> and scroll to <strong>Security</strong>.</li>
+      <li>If macOS offers <strong>Open Anyway</strong> for your copy of Eva|Bar from GitHub Releases, select it, then confirm and authenticate if prompted.</li>
+    </ol>
+    <p>If macOS says <strong>“Eva|Bar is damaged and can’t be opened”</strong>, download a fresh ZIP from GitHub Releases and extract it again. Try opening the fresh copy, then use <strong>Open Anyway</strong> if macOS lists Eva|Bar under <strong>Privacy &amp; Security</strong>. If the app still won’t open, <a href={`${repositoryUrl}/issues`}>report the issue</a> with your macOS version and Mac processor.</p>
+    <p class="resource-source"><a href="https://support.apple.com/en-us/102445">Apple’s guidance on opening apps on a Mac</a>.</p>
+  </section>
+
+  <h2>Keep the calculator above other windows</h2>
+  <p>Click the lock to pin Eva|Bar above your workspace. You can click a spreadsheet, editor, or browser window and keep the calculator in sight while you paste the result. Unlock the panel to dismiss it by clicking outside it. While the calculator is focused, <kbd>Esc</kbd> closes the open Preferences or function panel first. With those closed, <kbd>Esc</kbd> hides the calculator.</p>
+
+  <h2>Change the shortcut or open the app at login</h2>
+  <p>Open <strong>… → Preferences</strong> in Eva|Bar. In <strong>Global shortcut</strong>, start recording and press a combination that includes <kbd>Control</kbd>, <kbd>Option</kbd>, or <kbd>Command</kbd>. If the app reports that the shortcut is unavailable, record another combination. Turn on <strong>Launch at login</strong> to have the calculator available after signing in.</p>
+</ResourceArticle>

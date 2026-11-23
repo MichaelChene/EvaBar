@@ -2,7 +2,7 @@
 <h1 align="center">Eva|Bar</h1>
 <p align="center">A floating, keyboard-first calculator for the macOS menu bar.</p>
 <p align="center"><strong>macOS 13+ · Apple silicon and Intel</strong></p>
-<p align="center"><a href="https://github.com/MichaelChene/EvaBar/releases">Releases</a> · <a href="#quick-start">Quick start</a> · <a href="#build">Build</a></p>
+<p align="center"><a href="https://evabar.michaeljier.cn/">Website</a> · <a href="https://github.com/MichaelChene/EvaBar/releases">Releases</a> · <a href="#quick-start">Quick start</a> · <a href="#build">Build</a></p>
 
 ![Eva|Bar showing a live calculation in its floating bar](docs/images/evabar-bar.png)
 

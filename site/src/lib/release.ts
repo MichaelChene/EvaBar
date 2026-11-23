@@ -11,7 +11,7 @@ type GitHubRelease = {
   assets: { name: string; state: string; browser_download_url: string }[];
 };
 
-type MacDownload = { url: string; version: string; releaseUrl: string };
+type MacDownload = { url: string; version: string; releaseUrl: string; prerelease: boolean };
 
 export async function getMacDownloads() {
   try {
@@ -35,7 +35,11 @@ export async function getMacDownloads() {
       const universal = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-universal\.(zip|dmg)$/i.test(name));
       const arm64Asset = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-arm64\.(zip|dmg)$/i.test(name)) ?? universal;
       const intelAsset = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-(x86_64|intel)\.(zip|dmg)$/i.test(name)) ?? universal;
-      const releaseDetails = { version: release.tag_name, releaseUrl: release.html_url };
+      const releaseDetails = {
+        version: release.tag_name,
+        releaseUrl: release.html_url,
+        prerelease: release.prerelease,
+      };
       if (!arm64 && arm64Asset) {
         arm64 = { url: arm64Asset.browser_download_url, ...releaseDetails };
       }

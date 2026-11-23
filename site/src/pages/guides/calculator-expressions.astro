@@ -1,0 +1,29 @@
+---
+import ResourceArticle from "@/layouts/ResourceArticle.astro";
+import { resources } from "@/lib/resources";
+---
+<ResourceArticle page={resources.expressions}>
+  <p>Type a full expression into Eva|Bar’s menu bar calculator and the answer updates as you type. Press <kbd>Return</kbd> to copy the result. Use a period for decimal values and commas between function arguments.</p>
+
+  <h2>Expressions to try</h2>
+  <table class="resource-table">
+    <thead>
+      <tr><th scope="col">Task</th><th scope="col">Expression</th><th scope="col">Result</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Apply a 15% discount to 240</th><td><code>240 * (1 - 15 / 100)</code></td><td>204</td></tr>
+      <tr><th scope="row">Average three values</th><td><code>avg(12,18,24)</code></td><td>18</td></tr>
+      <tr><th scope="row">Find a remainder</th><td><code>17 % 5</code></td><td>2</td></tr>
+      <tr><th scope="row">Combine a power and a square root</th><td><code>2^3 + sqrt(81)</code></td><td>17</td></tr>
+      <tr><th scope="row">Use a base-3 logarithm</th><td><code>log(81,3)</code></td><td>4</td></tr>
+      <tr><th scope="row">Find the sine of 30 degrees</th><td><code>sin(30 * pi / 180)</code></td><td>0.5</td></tr>
+    </tbody>
+  </table>
+  <p>In Eva|Bar, <code>%</code> gives the remainder of a division. For 15% of 240, enter <code>240 * 15 / 100</code> to get <strong>36</strong>. Trigonometric functions take radians, so multiply an angle in degrees by <code>pi / 180</code> before passing it to <code>sin()</code>, <code>cos()</code>, or <code>tan()</code>.</p>
+
+  <h2>Control the format of copied results</h2>
+  <p>In <strong>… → Preferences</strong>, set your decimal precision and choose decimal and thousands separators. These settings control the displayed and copied result. When typing expressions, continue using a period as the decimal point, even if the result uses a comma.</p>
+
+  <h2>Find functions in the app</h2>
+  <p>Open the <strong>f</strong> panel for the built-in reference. Use <code>min()</code> and <code>max()</code> for the smallest and largest values in a list, <code>round()</code> for the nearest integer, and <code>floor()</code> or <code>ceil()</code> to round down or up.</p>
+</ResourceArticle>

@@ -1,0 +1,25 @@
+---
+import ResourceArticle from "@/layouts/ResourceArticle.astro";
+import { resources } from "@/lib/resources";
+---
+<ResourceArticle page={resources.spotlight}>
+  <p>Press Spotlight’s default shortcut, <kbd>Command–Space</kbd>, and type <code>144/12</code> to see <strong>12</strong> in the search window. For repeated calculations while editing a spreadsheet, Eva|Bar gives you a dedicated panel you can keep visible.</p>
+
+  <h2>Spotlight and Eva|Bar compared</h2>
+  <table class="resource-table">
+    <thead>
+      <tr><th scope="col">Task</th><th scope="col">Spotlight</th><th scope="col">Eva|Bar</th></tr>
+    </thead>
+    <tbody>
+      <tr><th scope="row">Default shortcut</th><td><kbd>Command–Space</kbd></td><td><kbd>Control–Shift–Space</kbd>. You can also click the menu bar icon.</td></tr>
+      <tr><th scope="row">Where results appear</th><td>In the Spotlight search window.</td><td>In a floating panel you can pin above your workspace.</td></tr>
+      <tr><th scope="row">Calculations</th><td>Math expressions and conversions for currency, temperature, and measurements.</td><td>Math expressions with functions such as <code>avg()</code> and <code>log()</code>. Press <kbd>Return</kbd> to copy the result.</td></tr>
+      <tr><th scope="row">Setup</th><td>Built into macOS.</td><td>Free, open-source app for macOS 13 or later.</td></tr>
+    </tbody>
+  </table>
+  <p class="resource-source">See Apple’s guide to <a href="https://support.apple.com/en-us/guide/mac-help/mchldd6ba066/mac">calculations and conversions in Spotlight</a>.</p>
+
+  <h2>A workflow for repeated calculations</h2>
+  <p>Suppose you’re filling a table with the average of three measurements at a time. Open Eva|Bar, click the lock, type <code>avg(12,18,24)</code>, and press <kbd>Return</kbd>. Paste <strong>18</strong> into your table. Click the expression field to enter the next set while the calculator stays visible.</p>
+  <p>For a quick currency or unit conversion, open Spotlight and type the amount and target unit, such as <code>25 cm in inches</code>.</p>
+</ResourceArticle>

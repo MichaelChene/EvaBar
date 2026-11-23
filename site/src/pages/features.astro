@@ -1,0 +1,75 @@
+---
+import brandMark from "../../../Resources/EvaBarAssets.xcassets/brand-mark.imageset/2x.png";
+import plusMinus from "../../../Resources/EvaBarAssets.xcassets/plus-minus.imageset/2x.png";
+import percent from "../../../Resources/EvaBarAssets.xcassets/percent.imageset/2x.png";
+import numberSign from "../../../Resources/EvaBarAssets.xcassets/number-sign.imageset/2x.png";
+import division from "../../../Resources/EvaBarAssets.xcassets/divide.imageset/2x.png";
+import equals from "../../../Resources/EvaBarAssets.xcassets/equal.imageset/2x.png";
+import notEqual from "../../../Resources/EvaBarAssets.xcassets/not.equal.imageset/2x.png";
+import pi from "../../../Resources/EvaBarAssets.xcassets/pi.imageset/2x.png";
+import summation from "../../../Resources/EvaBarAssets.xcassets/sigma.imageset/2x.png";
+import squareRoot from "../../../Resources/EvaBarAssets.xcassets/sqrt.imageset/2x.png";
+import ResourceArticle from "@/layouts/ResourceArticle.astro";
+import { resources } from "@/lib/resources";
+
+const icons = [
+  { image: brandMark, label: "Eva|Bar (f)" },
+  { image: plusMinus, label: "Plus or minus" },
+  { image: percent, label: "Percent" },
+  { image: numberSign, label: "Number sign" },
+  { image: division, label: "Division" },
+  { image: equals, label: "Equals" },
+  { image: notEqual, label: "Not equal" },
+  { image: pi, label: "Pi constant" },
+  { image: summation, label: "Summation" },
+  { image: squareRoot, label: "Square root" },
+];
+---
+<ResourceArticle page={resources.features}>
+  <nav class="resource-toc" aria-label="On this page">
+    <ul>
+      <li><a href="#menu-bar-icon">Menu bar icon</a></li>
+      <li><a href="#global-shortcut">Global shortcut</a></li>
+      <li><a href="#calculator-panel">Floating calculator</a></li>
+      <li><a href="#result-format">Result format</a></li>
+      <li><a href="#startup-and-language">Startup and language</a></li>
+    </ul>
+  </nav>
+
+  <section aria-labelledby="menu-bar-icon">
+    <h2 id="menu-bar-icon">Change or hide the Mac menu bar icon</h2>
+    <p>Click the Eva|Bar icon in the macOS menu bar to open the calculator. Click it again to close the panel. The default icon is <strong>f</strong>. To change it, open <strong>… → Preferences → Menu bar icon</strong> and pick a symbol. The menu bar updates immediately.</p>
+    <ul class="menu-icon-grid" aria-label="Available menu bar icons">
+      {icons.map(({ image, label }) => (
+        <li><img src={image.src} width={image.width} height={image.height} alt="" /><span>{label}</span></li>
+      ))}
+    </ul>
+    <p>Turn on <strong>Hide menu bar icon</strong> to remove it from the menu bar. Use your configured shortcut to open the calculator. If the shortcut is disabled, reopen Eva|Bar from Applications. Turn off the same setting to show the icon again.</p>
+  </section>
+
+  <section aria-labelledby="global-shortcut">
+    <h2 id="global-shortcut">Set a global calculator shortcut</h2>
+    <p>The default is <kbd>Control–Shift–Space</kbd>. In <strong>… → Preferences → Global shortcut</strong>, click the shortcut and press a combination that includes <kbd>Control</kbd>, <kbd>Option</kbd>, or <kbd>Command</kbd>. Press <kbd>Esc</kbd> to cancel recording. Use the <strong>×</strong> beside the shortcut to disable it, or Control-click the shortcut control and choose <strong>Restore default shortcut</strong>.</p>
+  </section>
+
+  <section aria-labelledby="calculator-panel">
+    <h2 id="calculator-panel">Pin, calculate, and copy</h2>
+    <ul class="feature-list">
+      <li><strong>Floating panel.</strong> Click the lock to keep the calculator visible while you work in another window. Unlock it to dismiss it by clicking outside.</li>
+      <li><strong>Live expressions.</strong> Type a full calculation and see the result as you edit. Use arithmetic, powers, averages, rounding, logarithms, and trigonometry. The <strong>f</strong> button inside the panel opens the function reference.</li>
+      <li><strong>Clipboard.</strong> Press <kbd>Return</kbd> while editing an expression, or click the copy button. With the calculator focused and no expression text selected, <kbd>Command–C</kbd> also copies the result.</li>
+    </ul>
+    <p><a href={resources.expressions.path}>Try calculator expressions and functions</a>.</p>
+  </section>
+
+  <section aria-labelledby="result-format">
+    <h2 id="result-format">Choose decimal places and separators</h2>
+    <p><strong>Decimal places</strong> offers settings from 0 to 15, with 10 by default. Choose a period or comma as the decimal separator, and a comma, period, or no grouping separator. These settings apply to displayed and copied results. Always type decimals with a period in expressions.</p>
+  </section>
+
+  <section aria-labelledby="startup-and-language">
+    <h2 id="startup-and-language">Launch at login and choose a language</h2>
+    <p>Turn on <strong>Launch at login</strong> to have Eva|Bar ready when you sign in. If macOS asks for approval, use <strong>Allow in System Settings</strong> to open the relevant setting.</p>
+    <p>Eva|Bar follows your system language by default. In <strong>Language</strong>, choose English, Simplified Chinese, Traditional Chinese, Japanese, Korean, German, French, Spanish, Brazilian Portuguese, or Italian.</p>
+  </section>
+</ResourceArticle>
