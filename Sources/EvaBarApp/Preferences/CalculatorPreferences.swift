@@ -16,19 +16,24 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
 
     private let defaults = UserDefaults.standard
     private let statusItem: NSStatusItem
+    private let dropdownMenu: DropdownMenu
     private let startup = PreferenceSwitch()
     private let startupMessage = NSButton(title: "", target: nil, action: nil)
+    private let liquidGlass = PreferenceSwitch()
     private var iconTiles: [PreferenceTile] = []
     private let hideIcon = PreferenceSwitch()
+    private var switches: [PreferenceSwitch] { [startup, hideIcon, liquidGlass] }
     private let precisionLabel = NSTextField(labelWithString: "")
     private let decrement = PreferenceTile()
     private let increment = PreferenceTile()
-    private let language = SeparatorPicker()
-    private let decimal = SeparatorPicker()
-    private let grouping = SeparatorPicker()
+    private let resetPrecision = PreferenceTile()
+    private let language = PreferencePicker()
+    private let decimal = PreferencePicker()
+    private let grouping = PreferencePicker()
     private let shortcutMessage = NSTextField(labelWithString: "")
     private let record = ShortcutEditorButton()
     private let clear = PreferenceTile()
+    private lazy var shortcutRow = ControlBand(views: [record, clear.glassBackground.wrap(clear)])
     private(set) var format: ResultFormatting
     private(set) var isShowingMenu = false
 
@@ -37,9 +42,12 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     var onClear: (() -> Void)?
     var onRestore: (() -> Void)?
     var onLanguageChange: (() -> Void)?
+    var onLiquidGlassChange: ((Bool) -> Void)?
+    var onOtherSwitchChange: (() -> Void)?
 
-    init(statusItem: NSStatusItem) {
+    init(statusItem: NSStatusItem, dropdownMenu: DropdownMenu) {
         self.statusItem = statusItem
+        self.dropdownMenu = dropdownMenu
         let storedPlaces = defaults.object(forKey: "decimalPlaces") as? Int
         let places = storedPlaces.flatMap { ResultFormatting.decimalPlaces.contains($0) ? $0 : nil }
         let storedDecimal = defaults.string(forKey: "decimalSeparator").flatMap(NumberSeparator.init(rawValue:))
@@ -57,12 +65,13 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
     }
 
     lazy var grid: DrawerGrid = {
-        configureSwitch(startup, label: L10n.text("Launch at login"), action: #selector(changeStartup))
+        startup.configure(label: L10n.text("Launch at login"), target: self, action: #selector(changeStartup))
         startupMessage.target = self
         startupMessage.action = #selector(openLoginItems)
         startupMessage.isBordered = false
         startupMessage.contentTintColor = .controlAccentColor
         startupMessage.font = .systemFont(ofSize: 11)
+        startupMessage.cell?.lineBreakMode = .byTruncatingTail
         startupMessage.isHidden = true
 
         record.isBordered = false
@@ -88,10 +97,11 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         precisionLabel.font = .monospacedDigitSystemFont(ofSize: 13, weight: .medium)
         precisionLabel.alignment = .center
         precisionLabel.widthAnchor.constraint(equalToConstant: 37).isActive = true
-        let resetPrecision = tile(symbol: "xmark", label: L10n.text("Restore default precision"), action: #selector(restorePrecision), filled: false)
+        configureTile(resetPrecision, symbol: "xmark", label: L10n.text("Restore default precision"),
+                      action: #selector(restorePrecision), filled: false)
 
         configurePopup(language, titles: [L10n.text("System Language")] + AppLanguage.allCases.map(\.displayName),
-                       label: L10n.text("Language"), action: #selector(changeLanguage), width: 178)
+                       label: L10n.text("Language"), action: #selector(changeLanguage))
         if let selected = L10n.selectedLanguage, let index = AppLanguage.allCases.firstIndex(of: selected) {
             language.selectItem(at: index + 1)
         }
@@ -109,46 +119,61 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
             return button
         }
         let hideIconTitle = L10n.text("Hide menu bar icon")
-        configureSwitch(hideIcon, label: hideIconTitle, action: #selector(changeIconVisibility))
+        hideIcon.configure(label: hideIconTitle, target: self, action: #selector(changeIconVisibility))
         hideIcon.updateState(statusItem.isVisible ? .off : .on, animated: false)
-        let hideIconLabel = NSTextField(labelWithString: hideIconTitle)
-        hideIconLabel.font = .systemFont(ofSize: 13)
-        let iconSection = section(L10n.text("Menu bar icon"), controls: [
-            DrawerGrid.row(iconTiles, spacing: 6),
-            DrawerGrid.row([hideIcon, hideIconLabel], spacing: 8)
-        ])
-        let shortcutRow = ControlBand(views: [record, clear])
+        let iconHeading = NSTextField(labelWithString: L10n.text("Menu bar icon"))
+        iconHeading.font = .systemFont(ofSize: 12)
+        iconHeading.textColor = .secondaryLabelColor
+        var appearanceControls: [NSView] = [
+            iconHeading,
+            DrawerGrid.row(iconTiles.map { $0.glassBackground.wrap($0) }, spacing: 6),
+            switchRow(hideIcon, label: hideIconTitle)
+        ]
+        if LiquidGlass.isAvailable {
+            let title = L10n.text("Liquid Glass")
+            liquidGlass.configure(label: title, target: self, action: #selector(changeLiquidGlass))
+            appearanceControls.append(switchRow(liquidGlass, label: title))
+        }
+        let appearanceSection = section(L10n.text("Appearance"), controls: appearanceControls)
+        appearanceSection.setCustomSpacing(6, after: iconHeading)
         shortcutRow.orientation = .horizontal
         shortcutRow.alignment = .centerY
         shortcutRow.spacing = 2
         shortcutRow.edgeInsets = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 6)
         let shortcut = section(L10n.text("Global shortcut"), controls: [shortcutRow, shortcutMessage])
         shortcutMessage.widthAnchor.constraint(lessThanOrEqualTo: shortcut.widthAnchor).isActive = true
-        let places = DrawerGrid.row([decrement, precisionLabel, increment, resetPrecision], spacing: 0)
-        places.setCustomSpacing(6, after: increment)
+        let incrementControl = increment.glassBackground.wrap(increment)
+        let places = DrawerGrid.row([
+            decrement.glassBackground.wrap(decrement), precisionLabel, incrementControl,
+            resetPrecision.glassBackground.wrap(resetPrecision)
+        ], spacing: 0)
+        places.setCustomSpacing(6, after: incrementControl)
         let separators = DrawerGrid.row([
-            section(L10n.text("Decimal separator"), controls: [decimal]),
-            section(L10n.text("Grouping separator"), controls: [grouping])
+            section(L10n.text("Decimal separator"), controls: [decimal.sizedView()]),
+            section(L10n.text("Grouping separator"), controls: [grouping.sizedView()])
         ], spacing: 16)
         separators.alignment = .top
+        let startupSection = section(L10n.text("Launch at login"), controls: [startup, startupMessage])
+        startupMessage.widthAnchor.constraint(lessThanOrEqualTo: startupSection.widthAnchor).isActive = true
         let sections = [
-            section(L10n.text("Launch at login"), controls: [switchContainer(), startupMessage]),
-            section(L10n.text("Language"), controls: [language]),
+            startupSection,
+            section(L10n.text("Language"), controls: [language.sizedView(width: 178)]),
             shortcut,
-            iconSection,
+            appearanceSection,
             section(L10n.text("Decimal places"), controls: [places]),
             separators
         ]
+        updateLiquidGlass(LiquidGlass.isEnabled)
         return DrawerGrid(
             sections: sections, columnCounts: [3, 2, 1], minimumColumnWidth: 328,
             horizontalInset: 24, verticalInset: 17, bottomInset: 17
         )
     }()
 
-    private func switchContainer() -> NSView {
-        let stack = DrawerGrid.row([startup], spacing: 0)
-        stack.edgeInsets = NSEdgeInsets(top: 2, left: 8, bottom: 0, right: 0)
-        return stack
+    private func switchRow(_ control: PreferenceSwitch, label: String) -> NSStackView {
+        let title = NSTextField(labelWithString: label)
+        title.font = .systemFont(ofSize: 13)
+        return DrawerGrid.row([control, title], spacing: 8)
     }
 
     private func section(_ title: String, controls: [NSView]) -> NSStackView {
@@ -182,17 +207,6 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         statusButton.title = image == nil ? "f" : ""
     }
 
-    private func configureSwitch(_ control: PreferenceSwitch, label: String, action: Selector) {
-        control.setButtonType(.switch)
-        control.title = ""
-        control.isBordered = false
-        control.target = self
-        control.action = action
-        control.setAccessibilityLabel(label)
-        control.widthAnchor.constraint(equalToConstant: 38).isActive = true
-        control.heightAnchor.constraint(equalToConstant: 22).isActive = true
-    }
-
     private func configureTile(_ button: PreferenceTile, symbol: String, label: String, action: Selector, filled: Bool = true) {
         button.isBordered = false
         button.filled = filled
@@ -213,22 +227,44 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         return button
     }
 
-    private func configurePopup(_ popup: NSPopUpButton, titles: [String], label: String,
-                                action: Selector, width: CGFloat = 130) {
+    private func configurePopup(_ popup: PreferencePicker, titles: [String], label: String,
+                                action: Selector) {
         popup.addItems(withTitles: titles)
         popup.font = .systemFont(ofSize: 13)
-        popup.bezelStyle = .regularSquare
+        popup.bezelStyle = .flexiblePush
+        popup.dropdownMenu = dropdownMenu
         popup.target = self
         popup.action = action
         popup.menu?.delegate = self
         popup.autoenablesItems = false
         popup.setAccessibilityLabel(label)
-        popup.widthAnchor.constraint(equalToConstant: width).isActive = true
-        popup.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
 
     func menuWillOpen(_ menu: NSMenu) { isShowingMenu = true }
     func menuDidClose(_ menu: NSMenu) { isShowingMenu = false }
+
+    var isTrackingSwitch: Bool { switches.contains(where: \.isTrackingMouse) }
+
+    func containsSwitch(at point: NSPoint, in window: NSWindow) -> Bool {
+        switches.contains { control in
+            control.window === window && control.visibleRect.contains(control.convert(point, from: nil))
+        }
+    }
+
+    func updateLiquidGlass(_ enabled: Bool) {
+        liquidGlass.updateState(enabled ? .on : .off, animated: false)
+        for control in switches { control.updateLiquidGlass(enabled) }
+        for picker in [language, decimal, grouping] { picker.updateLiquidGlass(enabled) }
+        for tile in iconTiles + [decrement, increment, resetPrecision, clear] { tile.updateLiquidGlass(enabled) }
+        shortcutRow.updateLiquidGlass(enabled)
+        record.usesLiquidGlass = enabled
+    }
+
+    @objc private func changeLiquidGlass() {
+        let state = liquidGlass.state
+        liquidGlass.updateState(state, animated: true)
+        onLiquidGlassChange?(state == .on)
+    }
 
     @objc private func changeLanguage() {
         let index = language.indexOfSelectedItem
@@ -245,6 +281,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         let state: NSControl.StateValue = status == .enabled ? .on : status == .requiresApproval ? .mixed : .off
         startup.updateState(state, animated: animated)
         startupMessage.title = error ?? L10n.text("Allow in System Settings")
+        startupMessage.toolTip = startupMessage.title
         startupMessage.isHidden = error == nil && status != .requiresApproval
     }
 
@@ -282,6 +319,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         defaults.set(hidden, forKey: Self.hideMenuBarIconKey)
         statusItem.isVisible = !hidden
         hideIcon.updateState(hidden ? .on : .off, animated: true)
+        onOtherSwitchChange?()
     }
 
     @objc private func changeStartup() {
@@ -296,6 +334,7 @@ final class CalculatorPreferences: NSObject, NSMenuDelegate {
         } catch {
             refreshStartup(error: L10n.text("Could not update login item"))
         }
+        onOtherSwitchChange?()
         onFormatChange?()
     }
 

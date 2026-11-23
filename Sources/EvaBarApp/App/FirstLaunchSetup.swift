@@ -9,7 +9,7 @@ enum FirstLaunchSetup {
         let preferences = defaults.persistentDomain(forName: bundleIdentifier) ?? [:]
         let existingSettings = [
             "menuBarIcon", CalculatorPreferences.hideMenuBarIconKey, "shortcut", "shortcutDisabled",
-            "decimalPlaces", "decimalSeparator", "groupSeparator"
+            "decimalPlaces", "decimalSeparator", "groupSeparator", LiquidGlass.preferenceKey
         ]
         return !existingSettings.contains { preferences[$0] != nil }
             && !preferences.keys.contains { $0.hasPrefix("NSStatusItem ") }

@@ -9,9 +9,14 @@ final class CalculatorPanelView: NSView {
 
     let bar = CalculatorBarView()
     let collapseButton = NSButton()
+    var onDrawerScroll: (() -> Void)?
+    private static let glassCornerRadius: CGFloat = 20
+    private static let drawerChromeHeight: CGFloat = 24
     private let backdrop = NSVisualEffectView()
     private let backdropTint = NSView()
+    private let glassBackdrop = LiquidGlassBackground(cornerRadius: glassCornerRadius)
     private let drawerScroll = NSScrollView()
+    private var drawerScrollOrigin = NSPoint.zero
     private let drawerContent = DrawerContentView()
     private var drawerGrids: [DrawerGrid] = []
     private var drawerTransition: DrawerTransition?
@@ -45,9 +50,14 @@ final class CalculatorPanelView: NSView {
             line.fillColor = NSColor(white: 0.47, alpha: 0.35)
         }
         drawerScroll.autohidesScrollers = true
+        drawerScroll.clipsToBounds = true
         drawerScroll.drawsBackground = false
         drawerScroll.documentView = drawerContent
-        [backdrop, bar, drawerScroll, divider, collapseButton].forEach { addSubview($0) }
+        let clipView = drawerScroll.contentView
+        clipView.postsBoundsChangedNotifications = true
+        NotificationCenter.default.addObserver(self, selector: #selector(drawerBoundsDidChange(_:)),
+                                               name: NSView.boundsDidChangeNotification, object: clipView)
+        [backdrop, glassBackdrop, bar, drawerScroll, divider, collapseButton].forEach { addSubview($0) }
         showDrawers([])
     }
 
@@ -64,9 +74,19 @@ final class CalculatorPanelView: NSView {
             ? NSColor(srgbRed: 25 / 255.0, green: 26 / 255.0, blue: 29 / 255.0, alpha: 0.42).cgColor
             : NSColor(white: 0.97, alpha: 0.15).cgColor
         layer?.borderColor = NSColor(white: dark ? 1 : 0, alpha: 0.13).cgColor
-        layer?.borderWidth = 1
-        layer?.cornerRadius = 13
+        layer?.borderWidth = glassBackdrop.isHidden ? 1 : 0
+        layer?.cornerRadius = glassBackdrop.isHidden ? 13 : Self.glassCornerRadius
         layer?.masksToBounds = true
+    }
+
+    func updateLiquidGlass(_ enabled: Bool) {
+        backdrop.isHidden = enabled
+        glassBackdrop.update(enabled: enabled)
+        bar.usesLiquidGlass = enabled
+        for button in [bar.moreButton, bar.lockButton, bar.helpButton, bar.copyButton, collapseButton] {
+            button.useLiquidGlassBezel(enabled)
+        }
+        needsDisplay = true
     }
 
     override func resizeSubviews(withOldSize oldSize: NSSize) {
@@ -81,19 +101,29 @@ final class CalculatorPanelView: NSView {
     }
 
     private func positionContent() {
+        (window as? CalculatorPanel)?.updateRetractionOpacity(visibleHeight: bounds.height)
         let barHeight = bar.height(fittingWidth: bounds.width)
         bar.frame = NSRect(x: 0, y: 0, width: bounds.width, height: barHeight)
         positionDrawer(below: barHeight)
     }
 
     private func positionDrawer(below barHeight: CGFloat) {
-        guard !drawerScroll.isHidden else { return }
-        // The panel clips the drawer while it animates. Keep the scroll view large enough to tile its scroller.
-        let drawerHeight = max(24, bounds.height - barHeight)
+        let drawerHeight = max(0, bounds.height - barHeight)
+        let hasVisibleDrawer = drawerHeight > 0 && !visibleDrawerGrids.isEmpty
+        drawerScroll.isHidden = !hasVisibleDrawer
+        divider.isHidden = !hasVisibleDrawer
+        collapseButton.isHidden = !hasVisibleDrawer
+        guard hasVisibleDrawer else { return }
+
+        let opacity = min(1, drawerHeight / Self.drawerChromeHeight)
+        drawerScroll.alphaValue = opacity
+        divider.alphaValue = opacity
+        collapseButton.alphaValue = opacity
         drawerScroll.frame = NSRect(x: 0, y: barHeight, width: bounds.width, height: drawerHeight)
         positionDrawerGrids()
         divider.frame = NSRect(x: 0, y: barHeight - 1, width: bounds.width, height: 1)
-        collapseButton.frame = NSRect(x: bounds.width - 37, y: max(barHeight, bounds.height - 24), width: 26, height: 22)
+        collapseButton.frame = NSRect(x: bounds.width - 37, y: max(barHeight, bounds.height - Self.drawerChromeHeight),
+                                      width: 26, height: 22)
     }
 
     func showDrawers(_ grids: [DrawerGrid], animated: Bool = false) {
@@ -131,6 +161,13 @@ final class CalculatorPanelView: NSView {
         drawerScroll.reflectScrolledClipView(drawerScroll.contentView)
     }
 
+    @objc private func drawerBoundsDidChange(_ notification: Notification) {
+        let origin = drawerScroll.contentView.bounds.origin
+        guard origin != drawerScrollOrigin else { return }
+        drawerScrollOrigin = origin
+        onDrawerScroll?()
+    }
+
     func drawerHeight(fittingWidth width: CGFloat) -> CGFloat {
         let scrollerWidth = drawerScroll.scrollerStyle == .legacy
             ? NSScroller.scrollerWidth(for: .regular, scrollerStyle: .legacy) : 0
@@ -163,6 +200,7 @@ final class CalculatorPanelView: NSView {
             let newScale: CGFloat = drawerGrids.contains(grid) ? 1 : 0
             let scale = oldScale + (newScale - oldScale) * progress
             let height = (gridHeights[grid] ?? 0) * scale
+            grid.isHidden = height == 0
             grid.frame = NSRect(x: 0, y: y, width: drawerWidth, height: height)
             y += height
         }

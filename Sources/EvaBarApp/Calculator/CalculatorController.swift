@@ -10,6 +10,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private var anchor: NSStatusBarButton? { statusItem.isVisible ? statusItem.button : nil }
     private let shortcuts: GlobalShortcut
     private var preferences: CalculatorPreferences
+    private let dropdownMenu: DropdownMenu
     private let defaults = UserDefaults.standard
     private let panel = CalculatorPanel()
     private let panelView = CalculatorPanelView()
@@ -20,6 +21,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private var resultText: String?
     private var copiedTimer: Timer?
     private var revealTask: Task<Void, Never>?
+    private var appearanceChange: Task<Void, Never>?
     private var outsideClickMonitor: Any?
     private var localMonitor: Any?
     private var isPinned = false
@@ -31,7 +33,9 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     init(statusItem: NSStatusItem, shortcuts: GlobalShortcut) {
         self.statusItem = statusItem
         self.shortcuts = shortcuts
-        preferences = CalculatorPreferences(statusItem: statusItem)
+        let dropdown = DropdownMenu()
+        dropdownMenu = dropdown
+        preferences = CalculatorPreferences(statusItem: statusItem, dropdownMenu: dropdown)
         super.init()
 
         if !defaults.bool(forKey: "shortcutDisabled") {
@@ -99,7 +103,9 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         panel.contentView = panelView
         panel.initialFirstResponder = bar.expression
         bar.expression.delegate = self
+        panelView.onDrawerScroll = { [weak self] in self?.dropdownMenu.dismiss() }
         configurePanelControls()
+        panelView.updateLiquidGlass(LiquidGlass.isEnabled)
     }
 
     private func configurePanelControls() {
@@ -126,6 +132,8 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         preferences.onClear = { [weak self] in self?.clearShortcut() }
         preferences.onRestore = { [weak self] in self?.restoreShortcut() }
         preferences.onLanguageChange = { [weak self] in self?.applyLanguage() }
+        preferences.onLiquidGlassChange = { [weak self] enabled in self?.setLiquidGlass(enabled) }
+        preferences.onOtherSwitchChange = { [weak self] in self?.deferLiquidGlassChange() }
     }
 
     private func applyLanguage() {
@@ -133,7 +141,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         configurePanelControls()
         reference = nil
         aboutWindow?.updateLocalization()
-        preferences = CalculatorPreferences(statusItem: statusItem)
+        preferences = CalculatorPreferences(statusItem: statusItem, dropdownMenu: dropdownMenu)
         connectPreferences()
         onLanguageChange?()
         isRecordingShortcut = false
@@ -146,7 +154,6 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
 
     private func configure(_ button: NSButton, symbol: String, artwork: String?, artworkSize: CGFloat = 20,
                            label: String, action: Selector) {
-        button.isBordered = false
         button.contentTintColor = NSColor(named: "TextPrimary") ?? .labelColor
         button.refusesFirstResponder = true
         button.target = self
@@ -181,6 +188,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
                     panel.resize(to: targetFrame, animated: false)
                 }
             }
+            panel.alphaValue = 1
             installEventMonitors()
         }
         panel.orderFrontRegardless()
@@ -227,6 +235,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private func hidePanel(animated: Bool = true) {
         guard !isClosing, panel.isVisible || revealTask != nil else { return }
         isClosing = true
+        dropdownMenu.dismiss()
         let wasOpening = revealTask != nil
         revealTask?.cancel()
         revealTask = nil
@@ -238,7 +247,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         panel.ignoresMouseEvents = true
         panelView.setDrawerScrollerEnabled(false)
         if animated && !wasOpening && panel.isOnActiveSpace && panel.allowsMotion {
-            panel.resize(to: CalculatorPanel.retractedFrame(for: panel.frame), animated: true)
+            panel.retract()
         }
         panel.orderOut(nil)
         clearCopyFeedback()
@@ -255,13 +264,32 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     private func installEventMonitors() {
         let mouseDown: NSEvent.EventTypeMask = [.leftMouseDown, .rightMouseDown, .otherMouseDown]
         outsideClickMonitor = NSEvent.addGlobalMonitorForEvents(matching: mouseDown) { [weak self] event in
-            self?.dismissFromOutside(at: event.locationInWindow)
+            guard let self else { return }
+            self.dropdownMenu.dismiss()
+            self.dismissFromOutside(at: event.locationInWindow)
         }
         localMonitor = NSEvent.addLocalMonitorForEvents(matching: mouseDown.union(.keyDown)) { [weak self] event in
             guard let self else { return event }
             if event.type == .keyDown {
                 guard self.panel.isKeyWindow, event.window == self.panel || event.window == nil else { return event }
+                if self.dropdownMenu.isVisible {
+                    if event.keyCode == kVK_Tab, event.modifierFlags.intersection([.command, .control, .option]).isEmpty {
+                        self.dropdownMenu.dismiss()
+                        return event
+                    }
+                    self.dropdownMenu.handleKeyDown(event)
+                    return nil
+                }
                 return self.handleKey(event)
+            }
+            if self.dropdownMenu.isVisible {
+                if event.window === self.dropdownMenu { return event }
+                self.dropdownMenu.dismiss()
+                if event.window === self.panel { return nil }
+            }
+            if self.appearanceChange != nil, event.type == .leftMouseDown, event.window === self.panel,
+               self.preferences.containsSwitch(at: event.locationInWindow, in: self.panel) {
+                self.deferLiquidGlassChange()
             }
             if event.window != self.panel {
                 let point = event.window?.convertPoint(toScreen: event.locationInWindow) ?? event.locationInWindow
@@ -272,7 +300,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
     }
 
     private func dismissFromOutside(at point: NSPoint) {
-        guard !isPinned, !isShowingMenu, !preferences.isShowingMenu,
+        guard !isPinned, !isShowingMenu, !preferences.isShowingMenu, !dropdownMenu.isVisible,
               statusButtonFrame?.contains(point) != true else { return }
         hidePanel()
     }
@@ -281,15 +309,18 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         let application = notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication
         guard application?.processIdentifier != ProcessInfo.processInfo.processIdentifier else { return }
         if revealTask != nil && !panel.isOnActiveSpace { return }
+        dropdownMenu.dismiss()
         dismissFromOutside(at: NSEvent.mouseLocation)
     }
 
     @objc private func activeSpaceChanged() {
+        dropdownMenu.dismiss()
         guard !isPinned, revealTask == nil, !panel.isOnActiveSpace else { return }
         hidePanel(animated: false)
     }
 
     @objc private func screenParametersChanged() {
+        dropdownMenu.dismiss()
         if panel.isVisible { resizePanel() }
     }
 
@@ -317,6 +348,7 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
 
     private func setDrawers(_ selection: Set<Drawer>) {
         guard drawers != selection else { return }
+        dropdownMenu.dismiss()
         isRecordingShortcut = false
         drawers = selection
         refreshDrawers(animated: panel.isVisible && revealTask == nil && panel.allowsMotion)
@@ -451,9 +483,65 @@ final class CalculatorController: NSObject, NSWindowDelegate, NSTextFieldDelegat
         addItem(L10n.text("Preferences…"), action: #selector(togglePreferences), to: menu)
         addItem(L10n.text("About"), action: #selector(showAbout), to: menu)
         addItem(L10n.text("Quit"), action: #selector(NSApplication.terminate(_:)), to: menu, target: NSApp)
+        if LiquidGlass.isAvailable {
+            dropdownMenu.show(menu: menu, from: bar.moreButton, anchorRect: bar.moreMenuAnchorRect) { item in
+                if let action = item.action {
+                    NSApp.sendAction(action, to: item.target, from: item)
+                }
+            }
+            return
+        }
         isShowingMenu = true
         defer { isShowingMenu = false }
         menu.popUp(positioning: nil, at: NSPoint(x: bar.moreButton.bounds.minX, y: bar.moreButton.bounds.minY), in: bar.moreButton)
+    }
+
+    private func setLiquidGlass(_ enabled: Bool) {
+        defaults.set(enabled, forKey: LiquidGlass.preferenceKey)
+        scheduleLiquidGlassChange(enabled)
+    }
+
+    private func deferLiquidGlassChange() {
+        guard appearanceChange != nil else { return }
+        scheduleLiquidGlassChange(defaults.bool(forKey: LiquidGlass.preferenceKey))
+    }
+
+    private func scheduleLiquidGlassChange(_ enabled: Bool) {
+        let wasEnabled = LiquidGlass.isEnabled
+        appearanceChange?.cancel()
+        appearanceChange = nil
+        guard enabled != wasEnabled else { return }
+        guard panel.isVisible, panel.allowsMotion else {
+            applyLiquidGlass(enabled)
+            return
+        }
+        // Keep the current control visible through its classic or AppKit animation.
+        let delay: Duration = wasEnabled ? .milliseconds(280) : .milliseconds(220)
+        appearanceChange = Task { @MainActor [weak self] in
+            do {
+                try await Task.sleep(for: delay)
+            } catch {
+                return
+            }
+            guard !Task.isCancelled, let self else { return }
+            if self.preferences.isTrackingSwitch ||
+                (self.panel.isKeyWindow && NSEvent.pressedMouseButtons & 1 != 0) {
+                self.deferLiquidGlassChange()
+                return
+            }
+            self.appearanceChange = nil
+            self.applyLiquidGlass(enabled)
+        }
+    }
+
+    private func applyLiquidGlass(_ enabled: Bool) {
+        LiquidGlass.isEnabled = enabled
+        panelView.updateLiquidGlass(enabled)
+        preferences.updateLiquidGlass(enabled)
+        if dropdownMenu.isVisible { dropdownMenu.updateLiquidGlass(enabled) }
+        resizePanel()
+        panel.recalculateKeyViewLoop()
+        panel.invalidateShadow()
     }
 
     private func addItem(_ title: String, action: Selector, to menu: NSMenu, target: AnyObject? = nil) {

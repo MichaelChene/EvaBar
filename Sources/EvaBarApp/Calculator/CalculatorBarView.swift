@@ -2,6 +2,7 @@ import AppKit
 
 @MainActor
 final class CalculatorBarView: NSView {
+    private static let glassToolWidth: CGFloat = 36
     let expression = NSTextField()
     let result = NSTextField(wrappingLabelWithString: "0.0")
     let moreButton = NSButton()
@@ -10,6 +11,13 @@ final class CalculatorBarView: NSView {
     let copyButton = NSButton()
     private let feedback = NSTextField(wrappingLabelWithString: "")
     private var tools: [NSButton] { [moreButton, lockButton, helpButton] }
+    private var widthScale: CGFloat { min(1, bounds.width / 1200) }
+    var usesLiquidGlass = false { didSet { needsLayout = true } }
+
+    var moreMenuAnchorRect: NSRect {
+        let width = Self.glassToolWidth * widthScale
+        return moreButton.bounds.insetBy(dx: (moreButton.bounds.width - width) / 2, dy: 0)
+    }
 
     init() {
         super.init(frame: .zero)
@@ -55,10 +63,10 @@ final class CalculatorBarView: NSView {
     override func layout() {
         super.layout()
         let width = bounds.width
-        let scale = min(1, width / 1200)
+        let scale = widthScale
         let centerY = bounds.maxY - CalculatorPanel.barHeight / 2 - 3
         let toolbarCenters: [CGFloat] = [64, 113, 163]
-        let buttonWidth = 48 * scale
+        let buttonWidth = (usesLiquidGlass ? Self.glassToolWidth : 48) * scale
         for (button, center) in zip(tools, toolbarCenters) {
             button.frame = NSRect(x: center * scale - buttonWidth / 2, y: centerY - 16,
                                   width: buttonWidth, height: 32)
