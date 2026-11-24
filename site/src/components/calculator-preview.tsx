@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const examples = [
@@ -12,12 +12,55 @@ const appearances = [
   { id: "classic", label: "Classic" },
 ] as const;
 
+const defaultAppearance = appearances[0].id;
+
+function previewImageUrl(appearance: string, example: string) {
+  return `/images/desktop-preview/${appearance}-${example}.webp`;
+}
+
 export function CalculatorPreview() {
   const [selected, setSelected] = useState(0);
-  const [appearance, setAppearance] = useState<(typeof appearances)[number]["id"]>("liquid-glass");
+  const [appearance, setAppearance] = useState<(typeof appearances)[number]["id"]>(defaultAppearance);
   const [copyFeedback, setCopyFeedback] = useState<{ index: number; status: "copied" | "unavailable" }>();
   const example = examples[selected];
   const feedback = copyFeedback?.index === selected ? copyFeedback.status : undefined;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const initialUrl = previewImageUrl(defaultAppearance, examples[0].id);
+
+    function preloadAlternates() {
+      if (controller.signal.aborted) return;
+      for (const { id: appearanceId } of appearances) {
+        for (const { id: exampleId } of examples) {
+          const url = previewImageUrl(appearanceId, exampleId);
+          if (url === initialUrl) continue;
+
+          const image = new Image();
+          image.fetchPriority = "low";
+          image.src = url;
+        }
+      }
+    }
+
+    async function schedulePreload() {
+      await document.fonts.ready;
+      if (controller.signal.aborted) return;
+
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(preloadAlternates);
+      } else {
+        window.setTimeout(preloadAlternates, 250);
+      }
+    }
+
+    if (document.readyState === "complete") {
+      void schedulePreload();
+    } else {
+      window.addEventListener("load", schedulePreload, { once: true, signal: controller.signal });
+    }
+    return () => controller.abort();
+  }, []);
 
   async function copyResult() {
     try {
@@ -33,7 +76,7 @@ export function CalculatorPreview() {
       <div className="desktop-preview" data-appearance={appearance}>
         <img
           className="desktop-preview-panel"
-          src={`/images/desktop-preview/${appearance}-${example.id}.webp`}
+          src={previewImageUrl(appearance, example.id)}
           width="2336"
           height="144"
           alt=""

@@ -16,7 +16,7 @@ Run `npm run check` to type-check the site and `npm run build` to generate it in
 
 For each processor type, the download menu selects the newest stable GitHub release with a compatible package and falls back to a prerelease when needed. Within a release, a processor-specific package takes priority over a universal one. The menu shows the version of each package and lists a shared universal package once. Rebuild the static site after publishing a release to update the download links. If GitHub is unavailable or no matching asset exists, the download button opens the releases page.
 
-The desktop preview layers cropped AppKit calculator captures over `public/images/macos-27-wallpaper.webp`. The panel crops in `public/images/desktop-preview/` are 2336 × 144 pixels and start at (32, 76) in the 2400 × 816 capture. Their filenames combine the appearance and example IDs from `src/components/calculator-preview.tsx`, as in `liquid-glass-split-bill.webp`. The web copy button is positioned over the native copy icon.
+The desktop preview layers cropped AppKit calculator captures over `public/images/macos-27-wallpaper.webp`. Each panel starts at (32, 76) in the 2400 × 816 source capture. The WebP files in `public/images/desktop-preview/` preserve the 2336 × 144 source crop’s aspect ratio. Their filenames combine the appearance and example IDs from `src/components/calculator-preview.tsx`, as in `liquid-glass-split-bill.webp`. The web copy button is positioned over the native copy icon.
 
 ## Production deployment
 
