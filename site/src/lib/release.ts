@@ -50,7 +50,7 @@ export async function getMacDownloads() {
     }
     if (arm64 || intel) return { arm64, intel };
   } catch (error) {
-    console.warn("Could not fetch Eva|Bar releases. Linking to the releases page.", error);
+    console.warn("Could not fetch EvaBar releases. Linking to the releases page.", error);
   }
 
   return null;

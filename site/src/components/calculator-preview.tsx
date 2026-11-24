@@ -29,7 +29,7 @@ export function CalculatorPreview() {
   }
 
   return (
-    <figure className="calculator-preview" aria-label="Eva|Bar interactive preview">
+    <figure className="calculator-preview" aria-label="EvaBar interactive preview">
       <div className="desktop-preview" data-appearance={appearance}>
         <img
           className="desktop-preview-panel"

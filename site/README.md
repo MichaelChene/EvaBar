@@ -1,6 +1,6 @@
-# Eva|Bar website
+# EvaBar website
 
-The Eva|Bar product site is a static Astro project with React islands, Tailwind CSS, and shadcn/ui components.
+The EvaBar product site is a static Astro project with React islands, Tailwind CSS, and shadcn/ui components.
 
 ## Develop
 

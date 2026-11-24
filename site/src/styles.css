@@ -74,7 +74,7 @@ button:not(:disabled) { cursor: pointer; }
   font-weight: 670;
   letter-spacing: -.045em;
 }
-.brand-divider { color: var(--primary); }
+.brand-divider::before { content: "|"; color: var(--primary); }
 .primary-nav, .site-footer nav { display: flex; gap: clamp(1rem, 3.4vw, 2.25rem); }
 .primary-nav a, .site-footer nav a {
   color: var(--muted-foreground);

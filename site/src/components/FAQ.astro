@@ -12,11 +12,11 @@ const { chipSupport, releaseNotesUrl } = Astro.props;
 <div class="faq-list">
   <details name="evabar-faq">
     <summary>
-      Which Macs can run Eva|Bar?
+      Which Macs can run EvaBar?
       <ChevronDown size={16} aria-hidden="true" />
     </summary>
     <p>
-      Eva|Bar requires macOS 13 or later.
+      EvaBar requires macOS 13 or later.
       {chipSupport
         ? `Downloads are available for ${chipSupport} Macs.`
         : <>See the <a href={releaseNotesUrl}>release notes</a> for supported Mac models.</>}
@@ -38,7 +38,7 @@ const { chipSupport, releaseNotesUrl } = Astro.props;
       <ChevronDown size={16} aria-hidden="true" />
     </summary>
     <p>
-      Eva|Bar follows your system language by default. Choose English, Simplified Chinese, Traditional Chinese,
+      EvaBar follows your system language by default. Choose English, Simplified Chinese, Traditional Chinese,
       Japanese, Korean, German, French, Spanish, Brazilian Portuguese, or Italian in Preferences.
     </p>
   </details>

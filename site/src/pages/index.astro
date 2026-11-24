@@ -23,15 +23,14 @@ const downloadUrls = downloadOptions.flatMap(({ download }) => download ? [downl
 const hasPrereleaseDownload = downloadOptions.some(({ download }) => download?.prerelease);
 const betaInstallUrl = `${resources.floating.path}#open-beta`;
 const chipSupport = [arm64 ? "Apple silicon" : null, intel ? "Intel" : null].filter(Boolean).join(" and ") || null;
-const title = "Eva|Bar — Free Menu Bar Calculator for Mac";
-const description = "Eva|Bar, formerly CalcBar2, is a free, open-source menu bar calculator for Mac. Open it with a global shortcut and press Return to copy the result.";
+const title = "EvaBar — Free Menu Bar Calculator for Mac";
+const description = "EvaBar, formerly CalcBar2, is a free, open-source menu bar calculator for Mac. Open it with a global shortcut and press Return to copy the result.";
 const canonical = new URL("/", Astro.site).href;
 const guidesAndComparisons = resourcePages.filter((page) => page.path !== resources.features.path);
-const structuredData = {
-  "@context": "https://schema.org",
+const application = {
   "@type": "SoftwareApplication",
-  name: "Eva|Bar",
-  alternateName: "CalcBar2",
+  name: "EvaBar",
+  alternateName: ["Eva|Bar", "CalcBar2"],
   url: canonical,
   description,
   operatingSystem: "macOS 13 or later",
@@ -43,9 +42,16 @@ const structuredData = {
   license: `${repositoryUrl}/blob/main/LICENSE`,
   offers: { "@type": "Offer", price: 0, priceCurrency: "USD", url: releaseNotesUrl },
 };
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    { "@type": "WebSite", name: "EvaBar", alternateName: "Eva|Bar", url: canonical },
+    application,
+  ],
+};
 const features = [
   { icon: Keyboard, heading: "Always a shortcut away", description: "Open the floating bar from any app, type your expression, and press Return to copy the result." },
-  { icon: Pin, heading: "Keep it in view", description: "Click the lock to keep Eva|Bar above your workspace. Unlock it to dismiss the bar by clicking anywhere else." },
+  { icon: Pin, heading: "Keep it in view", description: "Click the lock to keep EvaBar above your workspace. Unlock it to dismiss the bar by clicking anywhere else." },
   { icon: SlidersHorizontal, heading: "Numbers on your terms", description: "Set the decimal precision and choose your decimal and thousands separators in Preferences." },
 ];
 ---
@@ -55,7 +61,7 @@ const features = [
       <img class="hero-icon" src="/images/evabar-icon.png" alt="" width="85" height="85" />
       <p class="eyebrow">Do the math. Stay in flow.</p>
       <h1 id="hero-title">Menu bar calculator <br /><span>for Mac.</span></h1>
-      <p class="hero-description">Eva|Bar, formerly CalcBar2, is free and open source. Open the floating calculator with a global shortcut, type an expression, and press Return to copy the result.</p>
+      <p class="hero-description">EvaBar, formerly CalcBar2, is free and open source. Open the floating calculator with a global shortcut, type an expression, and press Return to copy the result.</p>
       <div class="hero-actions" id="download">
         {hasDownloads ? (
           <details class="download-menu" id="mac-downloads">
@@ -96,7 +102,7 @@ const features = [
     </div>
     <div id="preview" class="preview-anchor">
       <CalculatorPreview client:load />
-      <p class="preview-note">In Eva|Bar, Liquid Glass is available on macOS 26 and later. <a href={`${resources.features.path}#appearance`}>Appearance settings</a></p>
+      <p class="preview-note">In EvaBar, Liquid Glass is available on macOS 26 and later. <a href={`${resources.features.path}#appearance`}>Appearance settings</a></p>
     </div>
   </section>
 
@@ -124,8 +130,8 @@ const features = [
       </div>
     </div>
     <ol class="guide-steps">
-      <li><span>1</span><div><h3>Install Eva|Bar</h3><p>Unzip the download and move the app to your Applications folder.{hasPrereleaseDownload && <> If macOS blocks the beta, see <a href={betaInstallUrl}>first-launch instructions</a>.</>}</p></div></li>
-      <li><span>2</span><div><h3>Open the bar</h3><p>Click Eva|Bar in the menu bar or press Control–Shift–Space.</p></div></li>
+      <li><span>1</span><div><h3>Install EvaBar</h3><p>Unzip the download and move the app to your Applications folder.{hasPrereleaseDownload && <> If macOS blocks the beta, see <a href={betaInstallUrl}>first-launch instructions</a>.</>}</p></div></li>
+      <li><span>2</span><div><h3>Open the bar</h3><p>Click EvaBar in the menu bar or press Control–Shift–Space.</p></div></li>
       <li><span>3</span><div><h3>Type and copy</h3><p>Enter a calculation and press Return to copy the result.</p></div></li>
     </ol>
   </section>
