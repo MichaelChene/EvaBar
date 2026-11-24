@@ -1,6 +1,6 @@
 ---
 import { ArrowRight, ChevronDown, Keyboard, LaptopMinimal, Pin, SlidersHorizontal } from "lucide-react";
-import screenshot from "../../../docs/images/evabar-bar.png";
+import screenshot from "../../../docs/images/evabar-liquid-glass.png";
 import { CalculatorPreview } from "@/components/calculator-preview";
 import FAQ from "@/components/FAQ.astro";
 import { buttonVariants } from "@/components/ui/button";
@@ -96,6 +96,7 @@ const features = [
     </div>
     <div id="preview" class="preview-anchor">
       <CalculatorPreview client:load />
+      <p class="preview-note">In Eva|Bar, Liquid Glass is available on macOS 26 and later. <a href={`${resources.features.path}#appearance`}>Appearance settings</a></p>
     </div>
   </section>
 

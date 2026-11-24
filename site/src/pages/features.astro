@@ -28,6 +28,7 @@ const icons = [
 <ResourceArticle page={resources.features}>
   <nav class="resource-toc" aria-label="On this page">
     <ul>
+      <li><a href="#appearance">Appearance</a></li>
       <li><a href="#menu-bar-icon">Menu bar icon</a></li>
       <li><a href="#global-shortcut">Global shortcut</a></li>
       <li><a href="#calculator-panel">Floating calculator</a></li>
@@ -36,9 +37,15 @@ const icons = [
     </ul>
   </nav>
 
+  <section aria-labelledby="appearance">
+    <h2 id="appearance">Liquid Glass and classic appearance</h2>
+    <p>On macOS 26 and later, Eva|Bar uses Liquid Glass by default for the floating calculator, its toolbar, and controls such as switches and dropdowns. To change the appearance, open <strong>… → Preferences → Appearance</strong> and use the <strong>Liquid Glass</strong> switch below <strong>Hide menu bar icon</strong>.</p>
+    <p>The classic appearance uses frosted glass to blur the wallpaper behind the floating calculator. Earlier supported versions of macOS use this appearance by default. <a href="/#preview">Compare both appearances in the desktop preview</a>.</p>
+  </section>
+
   <section aria-labelledby="menu-bar-icon">
     <h2 id="menu-bar-icon">Change or hide the Mac menu bar icon</h2>
-    <p>Click the Eva|Bar icon in the macOS menu bar to open the calculator. Click it again to close the panel. The default icon is <strong>f</strong>. To change it, open <strong>… → Preferences → Menu bar icon</strong> and pick a symbol. The menu bar updates immediately.</p>
+    <p>Click the Eva|Bar icon in the macOS menu bar to open the calculator. Click it again to close the panel. The default icon is <strong>f</strong>. To change it, open <strong>… → Preferences → Appearance → Menu bar icon</strong> and pick a symbol. The menu bar updates immediately.</p>
     <ul class="menu-icon-grid" aria-label="Available menu bar icons">
       {icons.map(({ image, label }) => (
         <li><img src={image.src} width={image.width} height={image.height} alt="" /><span>{label}</span></li>

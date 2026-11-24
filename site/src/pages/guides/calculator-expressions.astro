@@ -3,7 +3,7 @@ import ResourceArticle from "@/layouts/ResourceArticle.astro";
 import { resources } from "@/lib/resources";
 ---
 <ResourceArticle page={resources.expressions}>
-  <p>Type a full expression into Eva|Bar’s menu bar calculator and the answer updates as you type. Press <kbd>Return</kbd> to copy the result. Use a period for decimal values and commas between function arguments.</p>
+  <p>Enter a full expression in Eva|Bar’s menu bar calculator to see the answer update as you type. Use a period for decimals and commas between function arguments.</p>
 
   <h2>Expressions to try</h2>
   <table class="resource-table">
@@ -19,11 +19,12 @@ import { resources } from "@/lib/resources";
       <tr><th scope="row">Find the sine of 30 degrees</th><td><code>sin(30 * pi / 180)</code></td><td>0.5</td></tr>
     </tbody>
   </table>
-  <p>In Eva|Bar, <code>%</code> gives the remainder of a division. For 15% of 240, enter <code>240 * 15 / 100</code> to get <strong>36</strong>. Trigonometric functions take radians, so multiply an angle in degrees by <code>pi / 180</code> before passing it to <code>sin()</code>, <code>cos()</code>, or <code>tan()</code>.</p>
-
-  <h2>Control the format of copied results</h2>
-  <p>In <strong>… → Preferences</strong>, set your decimal precision and choose decimal and thousands separators. These settings control the displayed and copied result. When typing expressions, continue using a period as the decimal point, even if the result uses a comma.</p>
+  <p>The discount example divides by 100 to turn 15% into a decimal. To calculate the discount amount itself, enter <code>240 * 15 / 100</code> to get <strong>36</strong>. Use the <code>%</code> operator when you want the remainder of a division, as in <code>17 % 5</code>.</p>
+  <p>In the sine example, <code>30 * pi / 180</code> converts 30 degrees to radians. Use the same conversion whenever you pass an angle in degrees to <code>sin()</code>, <code>cos()</code>, or <code>tan()</code>.</p>
 
   <h2>Find functions in the app</h2>
-  <p>Open the <strong>f</strong> panel for the built-in reference. Use <code>min()</code> and <code>max()</code> for the smallest and largest values in a list, <code>round()</code> for the nearest integer, and <code>floor()</code> or <code>ceil()</code> to round down or up.</p>
+  <p>If you need a function beyond the examples above, open the <strong>f</strong> panel for the built-in reference. Alongside <code>avg()</code>, you’ll find <code>min()</code> and <code>max()</code> for the smallest and largest values in a list. Use <code>round()</code> for the nearest integer, or <code>floor()</code> and <code>ceil()</code> to round down and up, respectively.</p>
+
+  <h2>Control the format of copied results</h2>
+  <p>Once you have your answer, press <kbd>Return</kbd> to copy it. If you need a specific format for a spreadsheet or report, open <strong>… → Preferences</strong> and set the number of decimal places and the decimal and thousands separators. The format applies to both displayed and copied results. Keep using a period when you enter a decimal in an expression, even if the result displays a comma.</p>
 </ResourceArticle>

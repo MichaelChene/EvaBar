@@ -203,6 +203,8 @@ a.download-option:hover, a.download-option:focus-visible { background: var(--acc
 .download-note a, .guide-steps a { color: var(--primary); text-decoration: underline; }
 
 .preview-anchor { position: relative; }
+.preview-note { margin: .7rem .25rem 0; color: var(--muted-foreground); font-size: .8125rem; }
+.preview-note a { margin-inline-start: .35rem; color: var(--primary); text-decoration: underline; }
 .calculator-preview {
   overflow: hidden;
   margin: 0;
@@ -211,55 +213,44 @@ a.download-option:hover, a.download-option:focus-visible { background: var(--acc
   background: #20171d;
   box-shadow: 0 28px 72px -36px #000c, 0 0 60px -40px #e6625366;
 }
-.desktop-wallpaper {
-  background: linear-gradient(180deg, #26121c70, #4017252e 65%), url("/images/macos-27-wallpaper.webp") center 52% / cover #37252b;
-}
 .desktop-preview {
-  min-height: clamp(15rem, 33vw, 23rem);
-  padding: 0 clamp(.625rem, 3vw, 2.125rem);
+  position: relative;
+  aspect-ratio: 2400 / 816;
+  /* The 2400 × 816 capture begins 107 px down the scaled 2400 × 1350 wallpaper. */
+  background: #20212b url("/images/macos-27-wallpaper.webp") center 20.037453% / 100% auto no-repeat;
 }
-.desktop-menubar {
+.desktop-preview-panel {
+  position: absolute;
+  /* The panel crop begins at (32, 76) in the 2400 × 816 capture. */
+  left: 1.333333%;
+  top: 9.313725%;
+  width: 97.333333%;
+  height: auto;
+}
+.demo-copy {
+  position: absolute;
+  /* AppKit copy button center in the 1200 × 408 pt capture. */
+  left: 85.5%;
+  top: 18.62745%;
+  width: max(24px, 2.83333%);
+  height: max(24px, 7.84314%);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+.demo-copy:hover { box-shadow: 0 0 0 1px #ffffff65; }
+.demo-readout {
   display: flex;
-  min-height: 2.1rem;
-  align-items: center;
   justify-content: space-between;
-  margin-inline: calc(-1 * clamp(.625rem, 3vw, 2.125rem));
-  padding-inline: 1rem;
-  border-bottom: 1px solid #fff2;
-  background: #1e141cbb;
-  color: #fff;
-  backdrop-filter: blur(18px);
-  font-size: .75rem;
-  font-weight: 550;
-}
-.desktop-app, .desktop-status { display: flex; align-items: center; gap: .625rem; }
-.desktop-status img, .demo-tools img { filter: brightness(0) invert(1); }
-.demo-calculator {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(.5rem, 2.2vw, 1.75rem);
-  margin-top: .875rem;
-  padding: .5rem clamp(.5rem, 1.8vw, 1.35rem);
-  min-height: 3.75rem;
-  border: 1px solid #ffffff45;
-  border-radius: .9rem;
-  background: #21161ddb;
-  box-shadow: 0 8px 28px #15090c66, inset 0 1px 0 #ffffff0c;
-  backdrop-filter: blur(24px);
-}
-.demo-tools { display: flex; align-items: center; gap: clamp(.55rem, 1.5vw, 1.1rem); color: #fcf1ef; }
-.demo-expression, .demo-result {
-  min-width: 0;
+  gap: .5rem;
+  padding: .625rem 1rem;
+  color: var(--foreground);
   font-family: var(--font-mono);
-  font-size: clamp(.9rem, 2.1vw, 1.38rem);
-  overflow-wrap: anywhere;
-  font-variant-numeric: tabular-nums;
+  font-size: .875rem;
 }
-.demo-expression { color: #f9efed; }
-.demo-answer { display: flex; align-items: center; gap: .35rem; min-width: 0; justify-content: end; }
-.demo-result { color: var(--console-accent); font-weight: 640; text-align: right; text-shadow: 0 0 18px #ffc07238; }
-.demo-copy { color: #f9d9ce; }
+.demo-readout output { font-weight: 650; white-space: nowrap; }
+@media (min-width: 701px) {
+  .demo-readout { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); }
+}
 .demo-caption {
   display: flex;
   min-height: 3.6rem;
@@ -269,11 +260,26 @@ a.download-option:hover, a.download-option:focus-visible { background: var(--acc
   border-top: 1px solid #ffffff20;
   padding: .5rem 1rem;
 }
-.demo-label { color: var(--muted-foreground); font-size: .875rem; }
-.demo-examples { display: flex; flex-wrap: wrap; gap: .25rem; }
+.demo-appearance {
+  display: flex;
+  align-items: center;
+  gap: .15rem;
+  padding: .2rem;
+  border: 1px solid #76515870;
+  border-radius: 999px;
+  background: #100b1078;
+}
+.demo-appearance button { border-radius: 999px; color: var(--muted-foreground); white-space: nowrap; }
+.demo-appearance button[aria-pressed="true"] {
+  background: #52343b;
+  box-shadow: inset 0 1px 0 #ffffff1a;
+  color: var(--foreground);
+}
+.demo-label { margin-inline-end: .25rem; color: var(--muted-foreground); font-size: .875rem; }
+.demo-examples { display: flex; flex-wrap: wrap; align-items: center; gap: .25rem; margin-inline-start: auto; }
 .example-button { border: 1px solid transparent; }
 .example-button[aria-pressed="true"] { border-color: #885048; background: #42262a; color: var(--console-accent); }
-.demo-feedback { margin-left: auto; color: var(--primary); font-size: .875rem; }
+.demo-feedback:not(:empty) { flex-basis: 100%; color: var(--primary); font-size: .875rem; text-align: end; }
 
 .content-section { padding-block: clamp(3.5rem, 8vw, 6.35rem); }
 .content-section h2 {
@@ -483,8 +489,7 @@ a.download-option:hover, a.download-option:focus-visible { background: var(--acc
   .hero-copy { padding-top: 2.35rem; }
   .hero::before, .hero::after { inset-inline: -1rem; }
   .hero::after { background-position: 75% top; opacity: .12; }
-  .demo-calculator { grid-template-columns: auto minmax(0, 1fr); }
-  .demo-answer { grid-column: 1 / -1; }
+  .demo-examples { margin-inline-start: 0; }
   .feature-grid, .tour-details, .guide, .questions, .resource-grid { grid-template-columns: 1fr; }
 }
 

@@ -4,7 +4,7 @@
 <p align="center"><strong>macOS 13+ · Apple silicon and Intel</strong></p>
 <p align="center"><a href="https://evabar.michaeljier.cn/">Website</a> · <a href="https://github.com/MichaelChene/EvaBar/releases">Releases</a> · <a href="#quick-start">Quick start</a> · <a href="#build">Build</a></p>
 
-![Eva|Bar showing a live calculation in its floating bar](docs/images/evabar-bar.png)
+![Eva|Bar’s floating calculator with Liquid Glass enabled](docs/images/evabar-liquid-glass.png)
 
 ## Quick start
 

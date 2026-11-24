@@ -10,7 +10,7 @@ export const resources = {
     path: "/compare/calcbar-1-6/",
     title: "CalcBar 1.6 Alternative for Mac — Eva|Bar",
     heading: "CalcBar 1.6 vs. Eva|Bar",
-    description: "CalcBar 1.6 needs Rosetta on Apple silicon and will stop working on macOS 28. Compare it with Eva|Bar, a native Mac menu bar calculator.",
+    description: "Compare CalcBar 1.6 and Eva|Bar on price, macOS compatibility, large-number precision, long results, interface languages, and Liquid Glass.",
   },
   spotlight: {
     path: "/compare/spotlight-calculator/",
@@ -34,7 +34,7 @@ export const resources = {
     path: "/features/",
     title: "Eva|Bar Features — Menu Bar Icons, Shortcuts and More",
     heading: "Eva|Bar features and preferences",
-    description: "Preview Eva|Bar’s 10 menu bar icons. Learn to change or hide the icon and set shortcuts, number formatting, launch at login, and language.",
+    description: "Learn how to switch Liquid Glass on or off, change or hide the menu bar icon, and set keyboard shortcuts and number formatting in Eva|Bar.",
   },
 } satisfies Record<string, ResourcePage>;
 

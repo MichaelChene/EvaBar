@@ -3,36 +3,48 @@ import ResourceArticle from "@/layouts/ResourceArticle.astro";
 import { resources } from "@/lib/resources";
 ---
 <ResourceArticle page={resources.calcbar}>
-  <p>Aubree Kendall’s original CalcBar 1.6 put a spreadsheet-style calculator in the Mac menu bar. Eva|Bar, previously called CalcBar2, is an independently maintained open-source calculator. Both apps let you open the bar with a shortcut, type a full expression, and lock the panel above other windows.</p>
+  <p>If you use CalcBar 1.6 for quick calculations while you work, Eva|Bar will feel familiar. Both apps let you open a calculator with a shortcut, type a full expression, and pin the panel above other windows. If you’re planning a macOS upgrade, check which builds your Mac can run.</p>
 
-  <h2>Rosetta and macOS 28 compatibility</h2>
-  <p>We inspected CalcBar 1.6 (build 2.6) and confirmed its executable is Intel-only (<code>x86_64</code>). On Apple silicon, it needs Rosetta 2 to run through macOS 27. Starting with macOS 28, Apple says Rosetta will be limited to certain older games. Under that policy, this CalcBar build will no longer run on Apple silicon. Eva|Bar has a native Apple silicon download that runs without Rosetta.</p>
-  <p class="resource-source">See <a href="https://support.apple.com/en-us/102527">Apple’s guidance on Rosetta and Intel-based apps</a>.</p>
-
-  <h2>CalcBar 1.6 and Eva|Bar compared</h2>
+  <h2>Key differences</h2>
   <table class="resource-table">
     <thead>
-      <tr><th scope="col">Feature</th><th scope="col">CalcBar 1.6</th><th scope="col">Eva|Bar</th></tr>
+      <tr><th scope="col">Topic</th><th scope="col">CalcBar 1.6</th><th scope="col">Eva|Bar</th></tr>
     </thead>
     <tbody>
+      <tr><th scope="row">Price and distribution</th><td>Previously sold on the Mac App Store</td><td>Free downloads through GitHub Releases, with source under the MIT license</td></tr>
       <tr><th scope="row">Minimum macOS version</th><td>macOS 11.1</td><td>macOS 13</td></tr>
-      <tr><th scope="row">Intel Macs</th><td>Native Intel build</td><td>Native Intel download</td></tr>
-      <tr><th scope="row">Apple silicon</th><td>Requires Rosetta 2 through macOS 27. The Intel build will stop working on macOS 28.</td><td>Native Apple silicon download (<code>arm64</code>)</td></tr>
-      <tr><th scope="row">Open from another app</th><td>Menu bar icon or customizable hotkey</td><td>Menu bar icon or customizable hotkey. The default is <kbd>Control–Shift–Space</kbd>.</td></tr>
-      <tr><th scope="row">Floating panel</th><td>Lock the panel to keep it visible</td><td>Lock the panel to keep it above your workspace</td></tr>
-      <tr><th scope="row">Expression functions</th><td>Arithmetic, powers, averages, logarithms, and trigonometry</td><td>Arithmetic, powers, averages, logarithms, and trigonometry. Supports both <code>asin()</code> and <code>arcsin()</code>.</td></tr>
-      <tr><th scope="row">Distribution</th><td>Originally distributed through the Mac App Store</td><td>Free downloads through GitHub Releases, with source under the MIT license</td></tr>
+      <tr><th scope="row">Apple silicon</th><td>Intel build via Rosetta on supported macOS versions through macOS 27</td><td>Native Apple silicon download (<code>arm64</code>)</td></tr>
+      <tr>
+        <th scope="row">Large-number precision</th>
+        <td>Outputs double-precision results, which can round large integers.</td>
+        <td>Preserves large integer digits in decimal arithmetic. <code>9007199254740992 + 1</code> gives <strong>9,007,199,254,740,993</strong> with comma grouping.</td>
+      </tr>
+      <tr>
+        <th scope="row">Long results</th>
+        <td>The result field clips text that exceeds its width.</td>
+        <td>The panel expands and wraps the result onto as many lines as needed.</td>
+      </tr>
+      <tr>
+        <th scope="row">Interface languages</th>
+        <td>English in the archived listing.</td>
+        <td>Follows the system language by default. Choose from <a href={`${resources.features.path}#startup-and-language`}>10 interface languages</a> in Preferences.</td>
+      </tr>
+      <tr>
+        <th scope="row">Appearance</th>
+        <td>Original panel appearance.</td>
+        <td>Switch between <a href={`${resources.features.path}#appearance`}>native Liquid Glass and classic frosted glass</a> on macOS 26 and later. Earlier supported versions use classic frosted glass.</td>
+      </tr>
     </tbody>
   </table>
-  <p class="resource-source">The original features are documented in the <a href="https://www.macupdater.org/app_updates/appinfo/com.AubreeCloud.CalcBar/index.html">archived app description</a>. The architecture and minimum macOS version come from the inspected app bundle.</p>
+  <p class="resource-source">Compatibility and result behavior are based on the inspected CalcBar 1.6 bundle (build 2.6). Price and language information comes from the <a href="https://calcbar-k25x9c.appstor.io/">archived CalcBar listing</a>.</p>
 
-  <h2>Try your familiar CalcBar expressions</h2>
-  <p>Open Eva|Bar and enter <code>avg(12,18,24)</code> for <strong>18</strong>, <code>log(81,3)</code> for <strong>4</strong>, or <code>sin(pi/2)</code> for <strong>1</strong>. <kbd>Return</kbd> copies the result to the clipboard. The <strong>f</strong> button opens the function reference.</p>
+  <h2>Rosetta and macOS 28 on Apple silicon</h2>
+  <p>On an Apple silicon Mac, CalcBar 1.6 relies on Rosetta to run its Intel build. Apple says that starting with macOS 28, Rosetta will be available only for certain older games. Under that policy, CalcBar 1.6 is expected to stop running on Apple silicon.</p>
+  <p class="resource-source"><a href="https://support.apple.com/en-us/102527">Apple’s guidance on Rosetta and Intel-based apps</a>.</p>
 
   <h2>Set up Eva|Bar on your Mac</h2>
   <ol>
-    <li>Check your macOS version and processor in <strong>Apple menu → About This Mac</strong>. Eva|Bar requires macOS 13 or later.</li>
-    <li><a href="/#download">Download Eva|Bar</a> for your processor, unzip it, and move the app to Applications.</li>
-    <li>Open <strong>… → Preferences</strong> to set your shortcut, decimal precision, and separators for displayed and copied results.</li>
+    <li>Open <strong>Apple menu → About This Mac</strong> to confirm you’re running macOS 13 or later and check whether your Mac has Apple silicon or an Intel processor.</li>
+    <li><a href="/#download">Download the Eva|Bar build</a> that matches your processor, unzip it, and move the app to Applications.</li>
   </ol>
 </ResourceArticle>
