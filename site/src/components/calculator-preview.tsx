@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const examples = [
@@ -12,55 +12,55 @@ const appearances = [
   { id: "classic", label: "Classic" },
 ] as const;
 
-const defaultAppearance = appearances[0].id;
+type Appearance = (typeof appearances)[number]["id"];
+type PreviewSelection = { appearance: Appearance; selected: number };
 
-function previewImageUrl(appearance: string, example: string) {
+const initialPreview: PreviewSelection = { appearance: appearances[0].id, selected: 0 };
+
+function previewImageUrl(appearance: Appearance, example: string) {
   return `/images/desktop-preview/${appearance}-${example}.webp`;
 }
 
+const previewUrls = appearances.flatMap(({ id: appearance }) =>
+  examples.map(({ id: example }) => previewImageUrl(appearance, example)),
+);
+const initialUrl = previewImageUrl(initialPreview.appearance, examples[0].id);
+
 export function CalculatorPreview() {
-  const [selected, setSelected] = useState(0);
-  const [appearance, setAppearance] = useState<(typeof appearances)[number]["id"]>(defaultAppearance);
+  const [{ appearance, selected }, setPreview] = useState(initialPreview);
+  const displayedPreview = useRef(initialPreview);
+  const requestedPreview = useRef(initialPreview);
+  const desktop = useRef<HTMLDivElement>(null);
   const [copyFeedback, setCopyFeedback] = useState<{ index: number; status: "copied" | "unavailable" }>();
   const example = examples[selected];
+  const activeUrl = previewImageUrl(appearance, example.id);
   const feedback = copyFeedback?.index === selected ? copyFeedback.status : undefined;
 
   useEffect(() => {
-    const controller = new AbortController();
-    const initialUrl = previewImageUrl(defaultAppearance, examples[0].id);
-
-    function preloadAlternates() {
-      if (controller.signal.aborted) return;
-      for (const { id: appearanceId } of appearances) {
-        for (const { id: exampleId } of examples) {
-          const url = previewImageUrl(appearanceId, exampleId);
-          if (url === initialUrl) continue;
-
-          const image = new Image();
-          image.fetchPriority = "low";
-          image.src = url;
-        }
-      }
+    for (const image of desktop.current?.querySelectorAll<HTMLImageElement>("img[hidden]") ?? []) {
+      void image.decode().catch(() => {});
     }
-
-    async function schedulePreload() {
-      await document.fonts.ready;
-      if (controller.signal.aborted) return;
-
-      if (typeof window.requestIdleCallback === "function") {
-        window.requestIdleCallback(preloadAlternates);
-      } else {
-        window.setTimeout(preloadAlternates, 250);
-      }
-    }
-
-    if (document.readyState === "complete") {
-      void schedulePreload();
-    } else {
-      window.addEventListener("load", schedulePreload, { once: true, signal: controller.signal });
-    }
-    return () => controller.abort();
   }, []);
+
+  async function showPreview(nextAppearance: Appearance, nextExample: number) {
+    const url = previewImageUrl(nextAppearance, examples[nextExample].id);
+    const image = desktop.current?.querySelector<HTMLImageElement>(`img[src="${url}"]`);
+    if (!image) return;
+
+    const next = { appearance: nextAppearance, selected: nextExample };
+    requestedPreview.current = next;
+    try {
+      await image.decode();
+    } catch {
+      if (requestedPreview.current === next) requestedPreview.current = displayedPreview.current;
+      return;
+    }
+
+    if (requestedPreview.current === next) {
+      displayedPreview.current = next;
+      setPreview(next);
+    }
+  }
 
   async function copyResult() {
     try {
@@ -73,14 +73,20 @@ export function CalculatorPreview() {
 
   return (
     <figure className="calculator-preview" aria-label="EvaBar interactive preview">
-      <div className="desktop-preview" data-appearance={appearance}>
-        <img
-          className="desktop-preview-panel"
-          src={previewImageUrl(appearance, example.id)}
-          width="2336"
-          height="144"
-          alt=""
-        />
+      <div ref={desktop} className="desktop-preview" data-appearance={appearance}>
+        {previewUrls.map((url) => (
+          <img
+            key={url}
+            className="desktop-preview-panel"
+            src={url}
+            loading="eager"
+            fetchPriority={url === initialUrl ? "high" : "low"}
+            hidden={url !== activeUrl}
+            width="2336"
+            height="144"
+            alt=""
+          />
+        ))}
         <button className="demo-copy" type="button" onClick={copyResult} aria-label="Copy result" title="Copy result" />
       </div>
       <div className="demo-readout">
@@ -91,7 +97,7 @@ export function CalculatorPreview() {
         <div className="demo-appearance" aria-label="Preview appearance" role="group">
           {appearances.map(({ id, label }) => (
             <Button key={id} type="button" size="sm" variant="ghost" aria-pressed={appearance === id}
-              onClick={() => setAppearance(id)}>
+              onClick={() => void showPreview(id, requestedPreview.current.selected)}>
               {label}
             </Button>
           ))}
@@ -108,7 +114,7 @@ export function CalculatorPreview() {
               className="example-button"
               onClick={() => {
                 setCopyFeedback(undefined);
-                setSelected(index);
+                void showPreview(requestedPreview.current.appearance, index);
               }}
             >
               {sample.label}
