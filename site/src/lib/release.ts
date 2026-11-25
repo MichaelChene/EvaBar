@@ -15,8 +15,12 @@ type MacDownload = { url: string; version: string; releaseUrl: string; prereleas
 
 export async function getMacDownloads() {
   try {
+    const token = process.env.GITHUB_TOKEN;
     const response = await fetch(`https://api.github.com/repos/${repository}/releases?per_page=100`, {
-      headers: { Accept: "application/vnd.github+json" },
+      headers: {
+        Accept: "application/vnd.github+json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status}`);
