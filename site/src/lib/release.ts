@@ -14,9 +14,14 @@ type GitHubRelease = {
 type MacDownload = { url: string; version: string; releaseUrl: string; prerelease: boolean };
 
 export async function getMacDownloads() {
+  const releaseTag = process.env.RELEASE_TAG;
+  const deployLatestRelease = process.env.DEPLOY_LATEST_RELEASE === "true";
+  const requireStableRelease = Boolean(releaseTag) || deployLatestRelease;
   try {
     const token = process.env.GITHUB_TOKEN;
-    const response = await fetch(`https://api.github.com/repos/${repository}/releases?per_page=100`, {
+    const endpoint = releaseTag ? `/tags/${encodeURIComponent(releaseTag)}`
+      : deployLatestRelease ? "/latest" : "?per_page=100";
+    const response = await fetch(`https://api.github.com/repos/${repository}/releases${endpoint}`, {
       headers: {
         Accept: "application/vnd.github+json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -25,7 +30,8 @@ export async function getMacDownloads() {
     });
     if (!response.ok) throw new Error(`GitHub returned HTTP ${response.status}`);
 
-    const releases: GitHubRelease[] = await response.json();
+    const data = await response.json();
+    const releases: GitHubRelease[] = requireStableRelease ? [data] : data;
     releases.sort((left, right) => {
       if (left.prerelease !== right.prerelease) return left.prerelease ? 1 : -1;
       return (right.published_at ?? "").localeCompare(left.published_at ?? "");
@@ -35,6 +41,7 @@ export async function getMacDownloads() {
     let intel: MacDownload | undefined;
     for (const release of releases) {
       if (release.draft || !release.published_at) continue;
+      if (requireStableRelease && (release.prerelease || (releaseTag && release.tag_name !== releaseTag))) continue;
       const uploaded = release.assets.filter(({ state }) => state === "uploaded");
       const universal = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-universal\.(zip|dmg)$/i.test(name));
       const arm64Asset = uploaded.find(({ name }) => /^EvaBar(?:-.+)?-arm64\.(zip|dmg)$/i.test(name)) ?? universal;
@@ -52,8 +59,13 @@ export async function getMacDownloads() {
       }
       if (arm64 && intel) break;
     }
+    if (requireStableRelease && (!arm64 || !intel)) {
+      const release = releaseTag ?? "The latest release";
+      throw new Error(`${release} must be a published stable release with Apple silicon and Intel downloads.`);
+    }
     if (arm64 || intel) return { arm64, intel };
   } catch (error) {
+    if (requireStableRelease) throw error;
     console.warn("Could not fetch EvaBar releases. Linking to the releases page.", error);
   }
 

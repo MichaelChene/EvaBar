@@ -20,8 +20,8 @@ The desktop preview layers cropped AppKit calculator captures over `public/image
 
 ## Production deployment
 
-The [GitHub Actions workflow](../.github/workflows/deploy-site.yml) publishes the site to [evabar.michaeljier.cn](https://evabar.michaeljier.cn/) when a stable GitHub Release is published. Set the production URL in `astro.config.mjs` to update the canonical URL, `robots.txt`, and sitemap together.
+The [GitHub Actions workflow](../.github/workflows/deploy-site.yml) deploys [evabar.michaeljier.cn](https://evabar.michaeljier.cn/) when a stable GitHub Release is published or when a push to `main` changes `site/` or the deploy workflow. Push deployments use GitHub's latest stable release. To deploy with a specific stable release, run the workflow manually and enter its tag. Set the production URL in `astro.config.mjs` to update the canonical URL, `robots.txt`, and sitemap together.
 
 In the GitHub repository’s Actions settings, add `VERCEL_TOKEN` as a secret and `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` as variables for the `michaeljiers-projects/evabar` Vercel project.
 
-Tag the release on a commit that includes this workflow and the `site` directory. Upload `EvaBar-<version>-arm64.zip` and `EvaBar-<version>-x86_64.zip` before publishing the release. The deploy job verifies that the menu links to a download from that release before uploading the site to Vercel.
+Tag the release on a commit that includes this workflow and the `site` directory. Before publishing the release, upload `EvaBar-<version>-arm64.zip` and `EvaBar-<version>-x86_64.zip`, or an `EvaBar-<version>-universal.zip`. The deploy job requires downloads for both architectures from the selected release.
